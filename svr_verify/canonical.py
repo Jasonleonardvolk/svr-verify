@@ -25,6 +25,9 @@ EXCLUDED_FIELDS = frozenset({
     "superseded_by",
     "verify_url",
     "receipt_status",
+    "latency_ms",
+    "retrieval_ms",
+    "compute_ms",
 })
 
 

@@ -41,7 +41,10 @@
         'signature_status',
         'superseded_by',
         'verify_url',
-        'receipt_status'
+        'receipt_status',
+        'latency_ms',
+        'retrieval_ms',
+        'compute_ms'
     ];
 
     // Required top-level fields (SVR Spec Section 3)

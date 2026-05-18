@@ -41,13 +41,19 @@ CHECKED_ITEM_FIELDS = [
     "reason",
 ]
 
-# Valid verdict values
+# Valid verdict values (base set + common domain-specific)
 VALID_VERDICTS = {
     "verified",
     "citation_audit_high_risk",
     "review_required",
     "unsafe_to_submit",
     "insufficient_data",
+    "contradicted",
+    "consistent",
+    "filing_consistent",
+    "material_contradictions",
+    "going_concern_detected",
+    "inconsistencies_detected",
 }
 
 # Valid filing safety statuses
@@ -121,7 +127,8 @@ def validate_structure(receipt):
             % (rs, ", ".join(sorted(VALID_RECEIPT_STATUS)))
         )
 
-    # verdict
+    # verdict - warn but don't error on unrecognized values
+    # Domain-specific verdicts are permitted beyond the base set
     v = receipt.get("verdict", "")
     if v and v not in VALID_VERDICTS:
         errors.append(

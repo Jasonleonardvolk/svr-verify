@@ -27,6 +27,9 @@ var ExcludedFields = map[string]bool{
 	"superseded_by":    true,
 	"verify_url":       true,
 	"receipt_status":   true,
+	"latency_ms":       true,
+	"retrieval_ms":     true,
+	"compute_ms":       true,
 }
 
 // RequiredFields per SVR Spec Section 3.
