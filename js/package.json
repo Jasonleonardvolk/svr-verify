@@ -1,0 +1,35 @@
+{
+  "name": "svr-verify",
+  "version": "1.0.0",
+  "description": "Standalone Signed Verification Receipt (SVR) verifier. No engine dependency required.",
+  "main": "svr-verify.js",
+  "browser": "svr-verify.js",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "keywords": [
+    "verification",
+    "receipt",
+    "ed25519",
+    "cryptographic",
+    "audit",
+    "compliance",
+    "svr"
+  ],
+  "author": "Invariant Research",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Jasonleonardvolk/svr-verify.git",
+    "directory": "js"
+  },
+  "homepage": "https://invariant.pro",
+  "dependencies": {
+    "tweetnacl": "^1.0.3"
+  },
+  "files": [
+    "svr-verify.js",
+    "README.md",
+    "LICENSE"
+  ]
+}

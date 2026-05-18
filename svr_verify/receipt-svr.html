@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Signed Verification Receipt | Invariant</title>
+<meta name="description" content="Signed Verification Receipt (SVR). Independently verifiable. Portable. Vendor-neutral.">
+<link rel="icon" href="/favicon.ico" type="image/x-icon">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0c;--bg-card:#16161a;--border:#1e1e24;--border-heavy:#2a2a32;--text:#e8e6e3;--text-dim:#8a8880;--text-muted:#4a4842;--accent:#c4392a;--green:#2a8a4a;--yellow:#d49a6a;--blue:#4a7ab5;--mono:'JetBrains Mono','Consolas',monospace}
+body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px}
+@media print{body{background:#fff;color:#111;padding:20px}.receipt{border-color:#333!important;background:#fff!important}.receipt *{color:#111!important}.verdict-stamp.unsafe{background:#c4392a!important;color:#fff!important}.verdict-stamp.safe{background:#2a8a4a!important;color:#fff!important}.verdict-stamp.review{background:#d49a6a!important;color:#fff!important}.actions-bar{display:none!important}.eval-watermark{display:block!important}:root{--bg:#fff;--bg-card:#f5f5f5;--border:#ccc;--text:#111;--text-dim:#555;--text-muted:#888}}
+
+.actions-bar{position:fixed;top:0;left:0;right:0;background:rgba(10,10,12,0.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border);padding:8px 20px;display:flex;align-items:center;justify-content:space-between;z-index:100}
+.actions-bar .brand{font-size:0.55rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--text-muted)}
+.actions-bar .brand span{color:var(--green);font-weight:700}
+.actions-bar .btns{display:flex;gap:8px}
+.act-btn{font-family:var(--mono);font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;padding:6px 16px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:border-color 0.2s,color 0.2s}
+.act-btn:hover{border-color:var(--text-dim);color:var(--text)}
+.act-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.act-btn.primary:hover{background:#d64a3c}
+.copied{color:var(--green)!important;border-color:var(--green)!important}
+
+.receipt{max-width:700px;width:100%;margin-top:60px;border:1px solid var(--border-heavy);background:var(--bg-card);padding:0;position:relative;overflow:hidden}
+.eval-watermark{display:none;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(45deg);font-size:4rem;font-weight:700;color:rgba(0,0,0,0.04);letter-spacing:0.2em;pointer-events:none;white-space:nowrap;z-index:1}
+
+/* ---- HEADER ---- */
+.receipt-header{padding:32px 32px 24px;border-bottom:1px solid var(--border);text-align:center}
+.receipt-title{font-size:0.5rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.receipt-type{font-size:0.7rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-dim);margin-bottom:20px}
+.verdict-stamp{display:inline-block;padding:12px 40px;font-size:1.3rem;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:10px}
+.verdict-stamp.unsafe{color:var(--accent);border:3px solid var(--accent);background:rgba(196,57,42,0.08)}
+.verdict-stamp.safe{color:var(--green);border:3px solid var(--green);background:rgba(42,138,74,0.08)}
+.verdict-stamp.review{color:var(--yellow);border:3px solid var(--yellow);background:rgba(212,154,106,0.08)}
+.verdict-reason{font-size:0.6rem;color:var(--text-dim);margin-top:8px;line-height:1.6;max-width:500px;margin-left:auto;margin-right:auto}
+.receipt-id-line{font-size:0.5rem;color:var(--text-muted);margin-top:12px;letter-spacing:0.05em}
+
+/* ---- COUNTS GRID ---- */
+.counts-grid{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border)}
+.count-cell{padding:18px 12px;text-align:center;border-right:1px solid var(--border)}
+.count-cell:last-child{border-right:none}
+.count-num{font-size:1.6rem;font-weight:700;line-height:1}
+.count-num.red{color:var(--accent)}
+.count-num.green{color:var(--green)}
+.count-num.yellow{color:var(--yellow)}
+.count-num.neutral{color:var(--text)}
+.count-lbl{font-size:0.45rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);margin-top:6px;line-height:1.4}
+
+/* ---- BODY ---- */
+.receipt-body{padding:20px 32px}
+.body-section{margin-bottom:18px}
+.section-label{font-size:0.45rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.body-row{display:flex;padding:2px 0;font-size:0.6rem;line-height:1.8}
+.body-key{color:var(--text-muted);min-width:150px;flex-shrink:0}
+.body-val{color:var(--text);word-break:break-word}
+
+/* ---- CHECKED ITEMS TABLE ---- */
+.items-table{width:100%;border-collapse:collapse;font-size:0.58rem;margin-top:6px}
+.items-table th{text-align:left;padding:6px 8px;border-bottom:2px solid var(--border-heavy);color:var(--text-muted);font-size:0.45rem;letter-spacing:0.05em;text-transform:uppercase;font-weight:400}
+.items-table td{padding:5px 8px;border-bottom:1px solid var(--border);vertical-align:top}
+.items-table tr:last-child td{border-bottom:none}
+.v-pass{color:var(--green);font-weight:700;font-size:0.5rem}
+.v-fail{color:var(--accent);font-weight:700;font-size:0.5rem}
+.v-review{color:var(--yellow);font-weight:700;font-size:0.5rem}
+.v-excluded{color:var(--text-muted);font-weight:400;font-size:0.5rem}
+.item-reason{color:var(--text-dim);font-size:0.5rem;margin-top:2px;line-height:1.5}
+
+/* ---- PROOF SKETCH CARDS ---- */
+.sketch-card{padding:10px 14px;margin-bottom:6px;border-left:3px solid var(--accent);background:rgba(196,57,42,0.04);font-size:0.58rem;line-height:1.7}
+.sketch-card.high{border-left-color:var(--yellow);background:rgba(212,154,106,0.04)}
+.sketch-card.medium{border-left-color:var(--blue);background:rgba(74,122,181,0.04)}
+.sketch-card.low{border-left-color:var(--text-muted);background:rgba(138,136,128,0.04)}
+.sketch-severity{font-weight:700;font-size:0.48rem;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:3px}
+.sketch-severity.critical{color:var(--accent)}
+.sketch-severity.high{color:var(--yellow)}
+.sketch-severity.medium{color:var(--blue)}
+.sketch-severity.low{color:var(--text-muted)}
+.sketch-summary{color:var(--text)}
+.sketch-claims{color:var(--text-dim);font-size:0.5rem;margin-top:3px}
+.sketch-energy{color:var(--text-muted);font-size:0.48rem;margin-top:2px}
+.sketch-remediation{color:var(--yellow);font-size:0.52rem;margin-top:4px}
+
+/* ---- REMEDIATION ---- */
+.repair-card{padding:10px 14px;margin-bottom:5px;border-left:3px solid var(--yellow);background:rgba(212,154,106,0.04);font-size:0.58rem;line-height:1.7}
+.repair-card.critical{border-left-color:var(--accent)}
+.repair-id{font-weight:700;color:var(--accent);margin-right:6px;font-size:0.5rem}
+.repair-type-badge{display:inline-block;font-size:0.42rem;letter-spacing:0.05em;text-transform:uppercase;padding:1px 6px;border-radius:2px;background:rgba(196,57,42,0.12);color:var(--accent);margin-left:6px}
+.repair-action{color:var(--text)}
+.repair-target{color:var(--text-dim);font-size:0.5rem;margin-top:2px}
+
+/* ---- ASSURANCE PACK ---- */
+.assurance-group{margin-bottom:12px}
+.assurance-title{font-size:0.48rem;font-weight:700;color:var(--text-dim);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:6px}
+.assurance-item{padding:4px 0;font-size:0.55rem;color:var(--text);line-height:1.6;padding-left:12px;border-left:2px solid var(--border)}
+.assurance-item+.assurance-item{margin-top:3px}
+
+/* ---- FOOTER ---- */
+.receipt-footer{padding:20px 32px;border-top:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:20px}
+.sig-block{font-size:0.55rem;line-height:2}
+.sig-label{font-size:0.45rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
+.sig-status-line{margin-top:8px;font-size:0.45rem;letter-spacing:0.05em}
+.sig-valid{color:var(--green)}
+.sig-unsigned{color:var(--text-muted)}
+.qr-block{flex-shrink:0;text-align:center}
+.qr-label{font-size:0.4rem;letter-spacing:0.05em;text-transform:uppercase;color:var(--text-muted);margin-top:6px}
+
+.disclaimer{padding:14px 32px;border-top:1px solid var(--border);font-size:0.48rem;color:var(--text-muted);line-height:1.8;text-align:center}
+.brand-line{padding:8px 32px;border-top:1px solid var(--border);font-size:0.45rem;color:var(--text-muted);text-align:center;letter-spacing:0.05em}
+
+@media(max-width:600px){.counts-grid{grid-template-columns:repeat(2,1fr)}.count-cell:nth-child(2){border-right:none}.receipt-footer{flex-direction:column;align-items:center}.body-row{flex-direction:column}.body-key{min-width:0;margin-bottom:2px}.items-table{font-size:0.5rem}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+
+<div class="actions-bar">
+<div class="brand"><span>SVR</span> signed verification receipt</div>
+<div class="btns">
+<button class="act-btn" onclick="copySummary()">Copy summary</button>
+<button class="act-btn" onclick="downloadJSON()">Download JSON</button>
+<button class="act-btn" onclick="window.print()">Print / PDF</button>
+</div>
+</div>
+
+<div class="receipt" id="receipt">
+<div style="padding:48px 32px;text-align:center">
+<div style="font-size:0.5rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px">SIGNED VERIFICATION RECEIPT</div>
+<div style="font-size:0.8rem;color:var(--text);margin-bottom:16px">Loading receipt data...</div>
+</div>
+</div>
+
+<script>
+(function(){
+    var data = null;
+
+    // Load from URL hash (base64 JSON)
+    if(window.location.hash && window.location.hash.length > 1){
+        try{ data = JSON.parse(atob(window.location.hash.substring(1))); }catch(e){}
+    }
+    // Fallback: URL param ?data=base64
+    if(!data){
+        var p = new URLSearchParams(window.location.search);
+        var d64 = p.get('data');
+        if(d64){ try{ data = JSON.parse(atob(d64)); }catch(e){} }
+    }
+    // Fallback: fetch ?file=path
+    if(!data){
+        var p = new URLSearchParams(window.location.search);
+        var filePath = p.get('file');
+        if(filePath){
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', filePath, false);
+            xhr.send();
+            if(xhr.status === 200){ try{ data = JSON.parse(xhr.responseText); }catch(e){} }
+        }
+    }
+
+    if(!data){
+        document.getElementById('receipt').innerHTML =
+            '<div style="padding:48px 32px;text-align:center">' +
+            '<div style="font-size:0.5rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--text-muted);margin-bottom:16px">SIGNED VERIFICATION RECEIPT</div>' +
+            '<div style="font-size:0.8rem;color:var(--text);margin-bottom:16px">No receipt data found.</div>' +
+            '<div style="font-size:0.6rem;color:var(--text-dim);line-height:2">' +
+            'Provide receipt via URL hash (#base64), query param (?data=base64 or ?file=path), or embed in page.' +
+            '</div></div>';
+        return;
+    }
+
+    window._svrData = data;
+    renderSVR(data);
+
+    // ================================================================
+    // VERTICAL DISPLAY NAMES AND DISCLAIMERS
+    // ================================================================
+    var VERTICALS = {
+        legal:       { name: 'Legal Citation Audit',             disclaimer: 'This receipt does not determine intent, malpractice, or bad faith. This is a deterministic citation and source-support audit. This receipt is the pre-filing control record.' },
+        legal_filing:{ name: 'Legal Filing Audit',               disclaimer: 'This receipt does not determine intent, malpractice, or bad faith. This is a deterministic citation and source-support audit. This receipt is the pre-filing control record.' },
+        soc2:        { name: 'SOC 2 Readiness Audit',            disclaimer: 'This receipt does not replace auditor judgment or constitute an audit opinion. This is a deterministic policy-to-criteria coverage verification. This receipt is the pre-certification readiness record.' },
+        compliance:  { name: 'Compliance Control Audit',         disclaimer: 'This receipt does not replace auditor judgment or constitute an audit opinion. This is a deterministic compliance constraint verification.' },
+        financial:   { name: 'SEC Filing Consistency Audit',     disclaimer: 'This receipt does not constitute investment advice, an audit opinion, or a legal determination. This is a deterministic intra-filing contradiction analysis.' },
+        clinical:    { name: 'Clinical Source Support Audit',    disclaimer: 'This receipt does not constitute a clinical recommendation or diagnosis. This is a deterministic source-support verification for clinical documentation.' },
+        healthcare:  { name: 'Healthcare Compliance Audit',      disclaimer: 'This receipt does not constitute medical advice. This is a deterministic compliance verification for healthcare documentation.' },
+        defense:     { name: 'Defense Source-Chain Audit',       disclaimer: 'This receipt is a deterministic source-chain verification. Classification markings in the source material are not evaluated.' },
+        procurement: { name: 'Procurement / Vendor Risk Audit',  disclaimer: 'This receipt is a deterministic vendor compliance verification. It does not replace due diligence.' },
+        rag:         { name: 'RAG Grounding Audit',              disclaimer: 'This receipt verifies answer-to-source grounding. It does not assess source quality or factual correctness beyond the provided corpus.' },
+        rag_kg:      { name: 'Knowledge Graph Audit',            disclaimer: 'This receipt verifies structural consistency of knowledge graph claims against source documents.' },
+        agent:       { name: 'Agent Action Verification',        disclaimer: 'This receipt verifies agent action traces against policy constraints. It does not evaluate the quality of agent decisions.' },
+        ai_governance:{ name: 'AI Governance Audit',             disclaimer: 'This receipt is a deterministic AI system compliance verification against regulatory requirements.' },
+        scientific:  { name: 'Scientific Integrity Audit',       disclaimer: 'This receipt verifies internal consistency of scientific claims. It does not assess experimental design or statistical validity.' },
+        autonomy:    { name: 'Autonomous Systems Audit',         disclaimer: 'This receipt verifies safety constraint compliance for autonomous system configurations.' },
+        faithfulness:{ name: 'Source Fidelity Verification',     disclaimer: 'This receipt is a deterministic source-fidelity verification. Same input, same result, every time.' },
+        protein:     { name: 'Protein Structure Verification',   disclaimer: 'This receipt does not predict protein folds or replace experimental validation. This is a deterministic structural consistency verification against a known native reference.' }
+    };
+
+    // ================================================================
+    // MAIN SVR RENDERER
+    // ================================================================
+    function renderSVR(d){
+        var rtype = d.receipt_type || d.effective_domain || 'faithfulness';
+        var vert = VERTICALS[rtype] || VERTICALS['faithfulness'] || { name: rtype.replace(/_/g,' '), disclaimer: 'This is a deterministic verification receipt.' };
+        var isEval = (d.receipt_status === 'evaluation');
+
+        // Verdict classification
+        var verdict = d.verdict || d.filing_safety_status || 'review_required';
+        var safeToRely = d.safe_to_rely;
+        var fss = d.filing_safety_status || 'REVIEW_REQUIRED';
+        var vc, vl, vr;
+        if(fss === 'SAFE_TO_SUBMIT' || verdict === 'verified' || safeToRely === true){
+            vc='safe'; vl='VERIFIED'; vr=d.reason || 'All checks passed.';
+        } else if(fss === 'UNSAFE_TO_SUBMIT' || verdict === 'unsafe_to_submit' || verdict === 'contradicted' || verdict === 'citation_audit_high_risk'){
+            vc='unsafe'; vl='UNSAFE TO SUBMIT'; vr=d.reason || 'Structural contradictions detected.';
+        } else {
+            vc='review'; vl='REVIEW REQUIRED'; vr=d.reason || 'Manual review recommended.';
+        }
+
+        var h = '';
+
+        // Evaluation watermark
+        if(isEval) h += '<div class="eval-watermark">EVALUATION</div>';
+
+        // ---- HEADER ----
+        h += '<div class="receipt-header">';
+        h += '<div class="receipt-title">Signed Verification Receipt</div>';
+        h += '<div class="receipt-type">' + esc(vert.name) + '</div>';
+        h += '<div class="verdict-stamp ' + vc + '">' + vl + '</div>';
+        h += '<div class="verdict-reason">' + esc(vr) + '</div>';
+        h += '<div class="receipt-id-line">' + esc(d.receipt_id || '') + '</div>';
+        h += '</div>';
+
+        // ---- COUNTS GRID ----
+        var ic = d.items_checked || 0;
+        var ip = d.items_passed || 0;
+        var ifa = d.items_failed || 0;
+        var ie = d.items_excluded || 0;
+        h += '<div class="counts-grid">';
+        h += countCell(ic, 'neutral', 'Checked');
+        h += countCell(ip, 'green', 'Passed');
+        h += countCell(ifa, ifa > 0 ? 'red' : 'green', 'Failed');
+        h += countCell(ie, ie > 0 ? 'yellow' : 'neutral', 'Excluded');
+        h += '</div>';
+
+        // ---- BODY ----
+        h += '<div class="receipt-body">';
+
+        // Audit Summary
+        h += '<div class="body-section">';
+        h += '<div class="section-label">Audit Summary</div>';
+        h += bodyRow('Receipt type', vert.name);
+        h += bodyRow('Receipt ID', d.receipt_id || 'none');
+        h += bodyRow('Timestamp', d.timestamp_utc || 'none');
+        h += bodyRow('Engine', d.engine_version || 'unknown');
+        if(d.latency_ms) h += bodyRow('Latency', d.latency_ms.toFixed(1) + ' ms');
+        if(d.constraint_layer_version) h += bodyRow('Constraint layer', 'v' + d.constraint_layer_version);
+        if(d.primitive_manifest_hash) h += bodyRow('Manifest hash', d.primitive_manifest_hash);
+        h += '</div>';
+
+        // ---- CHECKED ITEMS TABLE ----
+        var items = d.checked_items || [];
+        if(items.length > 0){
+            h += '<div class="body-section">';
+            h += '<div class="section-label">Checked Items (' + items.length + ')</div>';
+            h += '<table class="items-table"><thead><tr>';
+            h += '<th style="width:30px">#</th><th>Item</th><th style="width:60px">Verdict</th>';
+            h += '</tr></thead><tbody>';
+            for(var i=0;i<items.length;i++){
+                var it = items[i];
+                var v = (it.verdict||'').toUpperCase();
+                var cls = 'v-review';
+                if(v==='PASS'||v==='SUPPORTED'||v==='CITATION_VERIFIED'||v==='SUPPORTS_CANDIDATE') cls='v-pass';
+                else if(v==='FAIL'||v==='CONTRADICTED'||v==='CITATION_MISMATCH'||v==='UNSUPPORTED') cls='v-fail';
+                else if(v==='OUT_OF_SCOPE'||v==='SUPPORT_NOT_TESTED') cls='v-excluded';
+                h += '<tr>';
+                h += '<td style="color:var(--text-muted)">' + (it.item_id||i+1) + '</td>';
+                h += '<td>' + esc(it.claim_or_authority||'') + '<div class="item-reason">' + esc(it.reason||'') + '</div></td>';
+                h += '<td><span class="' + cls + '">' + esc(v) + '</span></td>';
+                h += '</tr>';
+            }
+            h += '</tbody></table>';
+            h += '</div>';
+        }
+
+        // ---- PROOF SKETCHES ----
+        var ps = d.proof_sketches;
+        if(ps && ps.sketches && ps.sketches.length > 0){
+            h += '<div class="body-section">';
+            h += '<div class="section-label">Obstruction Analysis (' + ps.total_obstructions + ')</div>';
+            for(var i=0;i<ps.sketches.length;i++){
+                var sk = ps.sketches[i];
+                var sev = (sk.severity||'medium').toLowerCase();
+                var cardClass = 'sketch-card';
+                if(sev==='high') cardClass += ' high';
+                else if(sev==='medium') cardClass += ' medium';
+                else if(sev==='low') cardClass += ' low';
+                h += '<div class="' + cardClass + '">';
+                h += '<div class="sketch-severity ' + sev + '">' + esc(sk.obstruction_id||'') + ' ' + esc(sev) + '</div>';
+                h += '<div class="sketch-summary">' + esc(sk.summary||'') + '</div>';
+                if(sk.claims_involved && sk.claims_involved.length > 0){
+                    h += '<div class="sketch-claims">' + esc(sk.claims_involved.join('; ')) + '</div>';
+                }
+                if(sk.energy_concentration && sk.energy_concentration.length > 0){
+                    var ec = sk.energy_concentration[0];
+                    h += '<div class="sketch-energy">Dirichlet energy: ' + (ec.energy||0).toFixed(4) + ' | theta: ' + (ec.theta||0).toFixed(4) + ' rad | compatibility: ' + (ec.compatibility||0).toFixed(2) + '</div>';
+                }
+                if(sk.remediation){
+                    h += '<div class="sketch-remediation">Remediation: ' + esc(sk.remediation) + '</div>';
+                }
+                h += '</div>';
+            }
+            h += '</div>';
+        }
+
+        // ---- REMEDIATION: PRIORITY REPAIR PLAN ----
+        var prp = d.priority_repair_plan;
+        if(prp && prp.length > 0){
+            h += '<div class="body-section">';
+            h += '<div class="section-label">Priority Remediation Plan (' + prp.length + ' repairs)</div>';
+            for(var i=0;i<prp.length;i++){
+                var r = prp[i];
+                var rcls = (r.severity==='CRITICAL') ? 'repair-card critical' : 'repair-card';
+                h += '<div class="' + rcls + '">';
+                h += '<span class="repair-id">' + esc(r.repair_id||'') + '</span>';
+                h += '<span class="repair-action">' + esc(r.action || r.expected_change || '') + '</span>';
+                h += '<span class="repair-type-badge">' + esc(r.repair_type||'') + '</span>';
+                h += '<div class="repair-target">Target: ' + esc(r.target||'') + ' | Priority: ' + (r.priority||'') + ' | Severity: ' + esc(r.severity||'') + '</div>';
+                h += '</div>';
+            }
+            h += '</div>';
+        }
+
+        // ---- ASSURANCE COMPLETION PACK ----
+        var acp = d.assurance_completion_pack;
+        if(acp){
+            h += '<div class="body-section">';
+            h += '<div class="section-label">Assurance Completion Pack</div>';
+            if(acp.evidence_to_collect && acp.evidence_to_collect.length > 0){
+                h += '<div class="assurance-group"><div class="assurance-title">Evidence to Collect</div>';
+                for(var i=0;i<acp.evidence_to_collect.length;i++){
+                    h += '<div class="assurance-item">' + esc(acp.evidence_to_collect[i].description||'') + '</div>';
+                }
+                h += '</div>';
+            }
+            if(acp.owners_to_assign && acp.owners_to_assign.length > 0){
+                h += '<div class="assurance-group"><div class="assurance-title">Owners to Assign</div>';
+                for(var i=0;i<acp.owners_to_assign.length;i++){
+                    h += '<div class="assurance-item">' + esc(acp.owners_to_assign[i].description||'') + '</div>';
+                }
+                h += '</div>';
+            }
+            if(acp.policy_updates_required && acp.policy_updates_required.length > 0){
+                h += '<div class="assurance-group"><div class="assurance-title">Policy Updates Required</div>';
+                for(var i=0;i<acp.policy_updates_required.length;i++){
+                    h += '<div class="assurance-item">' + esc(acp.policy_updates_required[i].description||'') + '</div>';
+                }
+                h += '</div>';
+            }
+            if(acp.recheck_command){
+                h += '<div class="assurance-group"><div class="assurance-title">Re-verification</div>';
+                h += '<div class="assurance-item" style="font-size:0.5rem;color:var(--text-dim)">' + esc(acp.recheck_command) + '</div>';
+                h += '</div>';
+            }
+            if(acp.closure_receipt_required){
+                h += '<div class="assurance-group"><div class="assurance-title">Closure</div>';
+                h += '<div class="assurance-item">Closure receipt required after remediation. Re-run verification to obtain SVR-CLOSURE receipt proving exact failures were resolved.</div>';
+                h += '</div>';
+            }
+            h += '</div>';
+        }
+
+        // ---- CONSTRAINT RESULTS (compact) ----
+        var cr = d.constraint_results;
+        if(cr && cr.length > 0){
+            h += '<div class="body-section">';
+            h += '<div class="section-label">Constraint Results (' + cr.length + ')</div>';
+            h += '<table class="items-table"><thead><tr>';
+            h += '<th>Constraint</th><th style="width:50px">Verdict</th><th style="width:50px">Score</th><th style="width:50px">Theta</th>';
+            h += '</tr></thead><tbody>';
+            for(var i=0;i<cr.length;i++){
+                var c = cr[i];
+                var cv = (c.verdict||'').toUpperCase();
+                var ccls = cv==='PASS' ? 'v-pass' : cv==='FAIL' ? 'v-fail' : 'v-review';
+                h += '<tr>';
+                h += '<td>' + esc(c.constraint||c.constraint_name||'') + '</td>';
+                h += '<td><span class="' + ccls + '">' + esc(cv) + '</span></td>';
+                h += '<td>' + (c.compatibility!==undefined ? c.compatibility.toFixed(2) : '') + '</td>';
+                h += '<td>' + (c.theta_rad!==undefined ? c.theta_rad.toFixed(4) : '') + '</td>';
+                h += '</tr>';
+            }
+            h += '</tbody></table>';
+            h += '</div>';
+        }
+
+        // ---- SHEAF METRICS ----
+        var sm = d.sheaf_metrics;
+        if(sm && (sm.h1_dimension!==undefined || sm.obstruction_count!==undefined)){
+            h += '<div class="body-section">';
+            h += '<div class="section-label">Sheaf Cohomology</div>';
+            if(sm.h1_dimension!==undefined) h += bodyRow('H^1 dimension', sm.h1_dimension);
+            if(sm.obstruction_count!==undefined) h += bodyRow('Obstructions', sm.obstruction_count);
+            if(sm.cokernel_dimension!==undefined) h += bodyRow('Cokernel dimension', sm.cokernel_dimension);
+            if(sm.grounding_ratio!==undefined) h += bodyRow('Grounding ratio', (sm.grounding_ratio * 100).toFixed(1) + '%');
+            if(sm.total_dirichlet_energy!==undefined) h += bodyRow('Total Dirichlet energy', sm.total_dirichlet_energy.toFixed(4));
+            if(sm.evidence_edges!==undefined) h += bodyRow('Evidence edges', sm.evidence_edges);
+            if(sm.claims_extracted!==undefined) h += bodyRow('Claims extracted', sm.claims_extracted);
+            h += '</div>';
+        }
+
+        h += '</div>'; // end receipt-body
+
+        // ---- FOOTER ----
+        h += '<div class="receipt-footer">';
+        h += '<div class="sig-block">';
+        h += '<div class="sig-label">Verification Record</div>';
+        h += bodyRow('Receipt ID', d.receipt_id || 'none');
+        h += bodyRow('Input hash', d.input_hash || 'none');
+        h += bodyRow('Source bundle', d.source_bundle_hash || 'none');
+        h += bodyRow('Engine', d.engine_version || 'unknown');
+        var pk = d.public_key || 'unsigned';
+        var pkDisplay = pk.length > 16 ? pk.substring(0,4)+'-'+pk.substring(4,8)+'-'+pk.substring(8,12)+'-'+pk.substring(12,16)+'...' : pk;
+        h += bodyRow('Public key', pkDisplay);
+        var ss = d.signature_status || 'UNSIGNED';
+        h += '<div class="sig-status-line ' + (ss==='VALID' ? 'sig-valid' : 'sig-unsigned') + '">';
+        h += 'Signature: ' + esc(ss);
+        if(ss==='VALID') h += ' | CRYPTOGRAPHICALLY SIGNED';
+        h += '</div>';
+        h += '</div>';
+        h += '<div class="qr-block"><div id="qrCode"></div>';
+        h += '<div class="qr-label">Verify receipt</div>';
+        h += '<div style="font-size:0.38rem;color:var(--text-muted);margin-top:2px">invariant.pro/verify</div>';
+        h += '</div>';
+        h += '</div>';
+
+        // ---- DISCLAIMER ----
+        h += '<div class="disclaimer">' + esc(vert.disclaimer) + ' This receipt is independently verifiable.</div>';
+        h += '<div class="brand-line">Signed Verification Receipt (SVR) v' + esc(d.svr_version||'1.0') + ' | invariant.pro</div>';
+
+        document.getElementById('receipt').innerHTML = h;
+
+        // QR code
+        var rid = d.receipt_id || '';
+        var verifyUrl = 'https://invariant.pro/verify/?id=' + encodeURIComponent(rid);
+        try{
+            new QRCode(document.getElementById('qrCode'),{
+                text:verifyUrl, width:80, height:80,
+                colorDark:'#e8e6e3', colorLight:'#16161a',
+                correctLevel:QRCode.CorrectLevel.M
+            });
+        }catch(e){}
+    }
+
+    // ================================================================
+    // HELPERS
+    // ================================================================
+    function countCell(num,color,label){
+        return '<div class="count-cell"><div class="count-num '+color+'">'+num+'</div><div class="count-lbl">'+label+'</div></div>';
+    }
+    function bodyRow(key,val){
+        return '<div class="body-row"><span class="body-key">'+key+'</span><span class="body-val">'+esc(val)+'</span></div>';
+    }
+    function esc(s){
+        if(s===null||s===undefined) return '';
+        var d=document.createElement('div');
+        d.appendChild(document.createTextNode(String(s)));
+        return d.innerHTML;
+    }
+})();
+
+function copySummary(){
+    var d = window._svrData;
+    if(!d) return;
+    var lines = [
+        'Signed Verification Receipt',
+        '',
+        'Receipt ID: ' + (d.receipt_id||''),
+        'Type: ' + (d.receipt_type||''),
+        'Verdict: ' + (d.verdict||''),
+        'Safety: ' + (d.filing_safety_status||''),
+        '',
+        'Items checked: ' + (d.items_checked||0),
+        'Items passed: ' + (d.items_passed||0),
+        'Items failed: ' + (d.items_failed||0),
+        '',
+        'Signature: ' + (d.signature_status||'UNSIGNED'),
+        'Engine: ' + (d.engine_version||''),
+        'Timestamp: ' + (d.timestamp_utc||''),
+        '',
+        'https://invariant.pro/verify/?id=' + encodeURIComponent(d.receipt_id||'')
+    ];
+    navigator.clipboard.writeText(lines.join('\n')).then(function(){
+        var btn = document.querySelector('.act-btn:first-child');
+        btn.textContent='Copied'; btn.classList.add('copied');
+        setTimeout(function(){btn.textContent='Copy summary';btn.classList.remove('copied');},2000);
+    });
+}
+
+function downloadJSON(){
+    var d = window._svrData;
+    if(!d) return;
+    var blob = new Blob([JSON.stringify(d,null,2)],{type:'application/json'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = (d.receipt_id||'receipt') + '.svr.json';
+    a.click();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,334 @@
+openapi: 3.1.0
+info:
+  title: SVR Verification API
+  description: |
+    API for verifying, replaying, and querying Signed Verification Receipts (SVR).
+    Implements Sections 5, 6, and 7 of the SVR v1.0 specification.
+    This API is vendor-neutral. Any compliant engine may implement it.
+  version: 1.0.0
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  contact:
+    name: Invariant Research
+    url: https://invariant.pro
+
+servers:
+  - url: https://invariant.pro/api/v1
+    description: Production
+  - url: http://localhost:8080/api/v1
+    description: Local development
+
+paths:
+  /verify:
+    post:
+      operationId: verifyReceipt
+      summary: Verify an SVR signature and structure
+      description: |
+        Accepts a full SVR JSON object. Recomputes the canonical serialization
+        per SVR Spec Section 4, verifies the Ed25519 signature, and validates
+        all structural requirements. Returns verification result.
+      tags:
+        - Verification
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - receipt
+              properties:
+                receipt:
+                  description: The full SVR JSON object to verify.
+                  type: object
+      responses:
+        "200":
+          description: Verification result (valid or invalid).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  signature_valid:
+                    type: boolean
+                    description: Whether the Ed25519 signature is valid.
+                  structure_valid:
+                    type: boolean
+                    description: Whether all structural checks pass.
+                  structure_errors:
+                    type: array
+                    items:
+                      type: string
+                    description: List of structural validation errors. Empty if valid.
+                  public_key_recognized:
+                    type: boolean
+                    description: Whether the public key belongs to a known issuer.
+                  issuer:
+                    type: string
+                    description: Name of the recognized issuer, if known.
+                  canonical_hash:
+                    type: string
+                    description: SHA-256 of the canonical serialization.
+
+  /replay:
+    post:
+      operationId: replayReceipt
+      summary: Replay a verification and compare results
+      description: |
+        Accepts the original input and sources, re-runs the verification engine
+        with the same replay_seed, and compares the result against the original
+        receipt. Implements SVR Spec Section 5 (Replay Semantics).
+      tags:
+        - Replay
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - receipt_id
+                - input
+              properties:
+                receipt_id:
+                  type: string
+                  description: Receipt ID of the original SVR to replay against.
+                input:
+                  type: string
+                  format: byte
+                  description: Base64-encoded original input bytes.
+                sources:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - source_id
+                      - content
+                    properties:
+                      source_id:
+                        type: string
+                      content:
+                        type: string
+                        format: byte
+                        description: Base64-encoded source content.
+                  description: Source documents used in the original audit.
+      responses:
+        "200":
+          description: Replay match result.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  replay_match:
+                    type: boolean
+                    description: True if replay produced identical results.
+                  decomposition_match:
+                    type: boolean
+                    description: True if decomposition_hash matches.
+                  verdict_match:
+                    type: boolean
+                    description: True if all checked_items verdicts match.
+                  new_receipt:
+                    type: object
+                    description: The newly generated SVR from the replay.
+        "409":
+          description: Replay mismatch detected.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  replay_match:
+                    type: boolean
+                    enum: [false]
+                  mismatch_reason:
+                    type: string
+                    enum:
+                      - input_hash_mismatch
+                      - source_bundle_hash_mismatch
+                      - engine_version_mismatch
+                      - decomposition_mismatch
+                      - verdict_mismatch
+                  expected_hash:
+                    type: string
+                  actual_hash:
+                    type: string
+
+  /receipts/{receipt_id}/supersession:
+    get:
+      operationId: checkSupersession
+      summary: Check if a receipt has been superseded
+      description: |
+        Returns whether the specified receipt has been superseded by a newer
+        audit. If superseded, returns the full chain and reasons.
+        Implements SVR Spec Section 6.2.
+      tags:
+        - Supersession
+      parameters:
+        - name: receipt_id
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^SATYA-[0-9]{8}-[A-Fa-f0-9]{8}$"
+          description: The receipt ID to check.
+      responses:
+        "200":
+          description: Supersession status.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  receipt_id:
+                    type: string
+                  superseded:
+                    type: boolean
+                  latest:
+                    type: string
+                    description: Receipt ID of the most recent audit in the chain.
+                  chain:
+                    type: array
+                    items:
+                      type: string
+                    description: Ordered list of receipt IDs from oldest to newest.
+                  supersession_reasons:
+                    type: array
+                    items:
+                      type: string
+                      enum:
+                        - restriction_map_updated
+                        - source_document_updated
+                        - policy_profile_changed
+                        - engine_version_upgraded
+                        - manual_reaudit
+                        - input_amended
+        "404":
+          description: Receipt not found.
+
+  /receipts/{receipt_id}/chain:
+    get:
+      operationId: getReceiptChain
+      summary: Get the full supersession chain for a receipt
+      description: |
+        Returns the complete supersession chain from the original issuance
+        to the most recent audit. Implements SVR Spec Section 6.3.
+      tags:
+        - Supersession
+      parameters:
+        - name: receipt_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Full receipt chain.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  chain:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        receipt_id:
+                          type: string
+                        timestamp_utc:
+                          type: string
+                          format: date-time
+                        verdict:
+                          type: string
+                        supersession_reason:
+                          type: string
+                          nullable: true
+
+  /restriction-maps/{edge_id}:
+    post:
+      operationId: updateRestrictionMap
+      summary: Update a restriction map on an existing edge
+      description: |
+        Updates the restriction map for a given edge and triggers the
+        specified update mode (silent, auto_reaudit, or flag_for_review).
+        Implements SVR Spec Section 7.
+      tags:
+        - Restriction Maps
+      parameters:
+        - name: edge_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The edge identifier in the sheaf complex.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - new_map
+                - mode
+              properties:
+                new_map:
+                  type: array
+                  items:
+                    type: array
+                    items:
+                      type: number
+                  description: The new restriction matrix (2D array of numbers).
+                mode:
+                  type: string
+                  enum:
+                    - silent
+                    - auto_reaudit
+                    - flag_for_review
+                  description: |
+                    How to handle prior receipts covering this edge.
+                    silent: Update internal state, no receipt issued.
+                    auto_reaudit: Re-audit all affected documents, issue new receipts.
+                    flag_for_review: Log change, tag affected receipts for human review.
+                reason:
+                  type: string
+                  description: Human-readable reason for the update.
+      responses:
+        "200":
+          description: Update result.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  edge_id:
+                    type: string
+                  old_restriction_hash:
+                    type: string
+                  new_restriction_hash:
+                    type: string
+                  mode:
+                    type: string
+                  receipts_superseded:
+                    type: integer
+                    description: Number of prior receipts superseded (auto_reaudit mode).
+                  new_receipt_ids:
+                    type: array
+                    items:
+                      type: string
+                    description: Receipt IDs of newly issued supersession receipts.
+                  flagged_for_review:
+                    type: integer
+                    description: Number of receipts flagged (flag_for_review mode).
+
+tags:
+  - name: Verification
+    description: Verify SVR signatures and structure.
+  - name: Replay
+    description: Deterministic replay verification.
+  - name: Supersession
+    description: Receipt chain and supersession queries.
+  - name: Restriction Maps
+    description: Dynamic restriction map updates.
