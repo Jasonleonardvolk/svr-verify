@@ -1,215 +1,124 @@
-# Announcing the Signed Verification Receipt: Trust Infrastructure for the Agent Economy
+# Your AI Agent Just Took an Action. Where Is the Receipt?
 
-*Portable, cryptographically signed, vendor-neutral receipts for AI verification. Because trust shouldn't be locked inside a platform.*
+*Trust infrastructure for the agent economy.*
 
-As AI agents move from drafting to acting, enterprises need a
-verification layer that produces signed evidence of what was
-checked, what failed, what was repaired, and whether the result
-is safe to rely on.
+Last week, Anthropic connected Claude to Westlaw, DocuSign, Everlaw, and 20 other legal platforms. Thomson Reuters rebuilt CoCounsel on Claude's agent SDK. Harvey hit an $11 billion valuation. Salesforce made Agentforce the center of its AI strategy. ServiceNow is expanding AI Control Tower.
 
-Every major platform is racing to solve this. Thomson Reuters
-verifies citations inside CoCounsel. Salesforce built a trust
-layer into Agentforce. ServiceNow is expanding AI Control Tower.
-Harvey, Legora, and dozens of others are embedding verification
-into their agent workflows. Billions of dollars of combined
-investment, all converging on one message: you cannot deploy
-AI agents without verification.
+The message from every direction is the same: AI agents are no longer drafting. They are acting. Reviewing contracts. Flagging risks. Filing documents. Making decisions that carry professional, legal, and financial consequences.
 
-They're right. Verification is mandatory.
+Here is the question nobody answered last week:
 
-But their verification dies when you leave their walled garden.
-If you switch platforms, your verification history disappears.
-If an agent in one system hands work to an agent in another,
-the verification doesn't travel. The trust is locked to the
-platform that produced it.
+When the agent acts, where is the receipt?
 
-That is lock-in through trust infrastructure.
+Not the log line inside the platform. Not the confidence score the model assigned to itself. The receipt. The signed, portable, independently verifiable document that proves what was checked, what failed, what was repaired, and whether the result was safe to rely on.
 
-We think that's the wrong architecture for an interoperable
-agent economy.
+The one you hand to opposing counsel. The one the auditor asks for. The one your insurer reads when adjusting your premium. The one the regulator demands when enforcement starts.
 
-We built something different.
+That receipt does not exist today. Not because verification is hard. Every major platform now verifies. The problem is that their verification lives inside their walls. The moment your work product leaves the platform, the verification disappears. You are holding an AI-generated artifact with no proof that anyone checked it.
 
-## What is a Signed Verification Receipt?
+Switch from CoCounsel to Harvey? Your verification history is gone. Export a brief and send it to co-counsel at another firm? They cannot confirm it was verified. Hand an agent's output from one system to an agent in another? The trust does not transfer.
 
-A Signed Verification Receipt (SVR) is a cryptographically signed,
-point-in-time attestation that a verification engine checked a
-specific artifact against specific source evidence and produced a
-specific result.
+That is not a bug in their product. It is their business model. Lock-in through trust infrastructure.
 
-An SVR is:
+## What If the Proof Traveled With the Work?
 
-- **Portable.** It's a JSON file. Take it anywhere. Attach it to
-  an audit package, a court filing, an agent handoff, a vendor
-  assessment, a regulatory submission. It is not locked to any
-  platform.
+Imagine a different model. Every time a verification engine checks an artifact, it produces a receipt. That receipt is a JSON file, signed with Ed25519, carrying the full audit result. It travels with the work product. Anyone who receives it can verify the signature with a single command, offline, without contacting the platform that issued it.
 
-- **Signed.** Ed25519 digital signature. Unforgeable. If a single
-  byte changes, the signature breaks.
+The receipt answers five questions:
 
-- **Independently verifiable.** Anyone can verify an SVR without
-  the engine that produced it. Install `svr-verify` (open source,
-  MIT licensed, available on PyPI), point it at the receipt, and
-  get VALID or INVALID. No account. No API key. The public key of
-  the issuer is embedded in the receipt or obtained once from a
-  trusted source. After that, verification is purely local.
+What was checked? Every claim, citation, control, constraint, or agent output that was evaluated, listed individually with its verdict.
 
-- **Vendor-neutral.** The SVR specification is an open standard.
-  Any verification engine can issue SVRs. We publish the spec, the
-  JSON schema, verifier libraries in Python, JavaScript, and Go,
-  and an OpenAPI specification for the verification API. All MIT
-  licensed.
+What failed? Specific items, with explanations of why. Not "something looks off." The mathematical structure of the contradiction, the energy localization showing exactly where the problem sits, and a plain-language explanation a professional can act on.
 
-## What Does an SVR Contain?
+What is the repair path? A priority-ordered remediation plan. What to fix first, ranked by how much risk each fix eliminates. Evidence to collect. Owners to assign. Policies to update. Not "fix this." The Monday morning work queue.
 
-Every SVR answers five questions:
+Is it safe to rely on? A deterministic yes, no, or review-required, with the basis for the decision.
 
-1. **What was checked?** A table of every claim, citation, control,
-   constraint, or agent output that was evaluated.
+Can you verify it independently? Always. One command: `pip install svr-verify`. Point it at the receipt. VALID or INVALID. No account. No API key. No internet connection after install.
 
-2. **What failed?** Per-item verdicts with explanations.
+That is what a Signed Verification Receipt is.
 
-3. **What was excluded?** Explicit scope boundaries.
+## The Uncomfortable Field
 
-4. **Is it safe to rely on?** A deterministic verdict with the
-   mathematical basis for the decision.
+Every SVR carries a required field called `verification_method`. It declares how the verification was performed.
 
-5. **Can the receipt be independently verified?** Yes. Always.
+`deterministic_algebraic`: zero probabilistic components. Same input, same result, every time. Replayable.
 
-Beyond the basics, SVRs can carry proof sketches (mathematical
-explanations of WHY something failed, not just THAT it failed),
-priority remediation plans (what to fix first, ordered by risk
-reduction per unit effort), and assurance completion packs (the
-auditor handoff: evidence to collect, owners to assign, policies
-to update, closure receipt required).
+`probabilistic_llm`: an LLM is somewhere in the verification loop. Not replayable. Different run, potentially different result.
 
-Every receipt also declares its `verification_method`: whether
-the engine used deterministic algebraic verification, probabilistic
-LLM checking, rule-based analysis, or human review. This field
-is required, not optional. The market can read it.
+`deterministic_rule_based`: traditional rule engine. Replayable. No ML.
+
+`human_review`: a person checked it. Not replayable by definition.
+
+This field is not optional. Every receipt declares its method. The market reads it. The insurer reads it. The regulator reads it.
+
+When two receipts sit side by side on an auditor's desk, one saying `deterministic_algebraic` with `parameter_count: 0` and `deterministic_replay: true`, and the other saying `probabilistic_llm` with `parameter_count: 70000000000` and `deterministic_replay: false`, the risk calculus is visible without opening either document.
+
+Nobody has to argue about which approach is better. The receipts speak for themselves.
 
 ## Why Open?
 
-We could have kept the receipt format proprietary. Charged per
-verification. Built a walled garden just like everyone else.
+A proprietary receipt format is a product. Products compete on features, price, and marketing. An open receipt format is infrastructure. Infrastructure gets adopted.
 
-We chose not to, for one reason: a proprietary receipt format is
-a product. Products compete on features, price, and marketing.
-An open receipt format is infrastructure. Infrastructure gets
-adopted.
+The SVR specification is published. The JSON schema is published. Verifier libraries exist in Python, JavaScript, and Go. An OpenAPI spec defines the verification API. Everything is MIT licensed.
 
-We want every AI platform, every agent framework, and every
-enterprise governance stack to issue Signed Verification Receipts.
-Not because they use our engine (though we'd welcome that), but
-because every agent action should leave a receipt.
+Any verification engine can issue SVRs. Thomson Reuters could issue them from CoCounsel. Harvey could issue them from their platform. Salesforce could issue them from Agentforce. The specification does not care who built the engine. It cares that the receipt is signed, structured, and verifiable.
 
-If Thomson Reuters, Salesforce, ServiceNow, Harvey, Anthropic,
-or any other platform wants to issue SVRs, the specification is
-public, the schema is published, and the verifier is free.
+The receipt ID prefix is issuer-defined. SATYA receipts start with `SATYA-`. A Thomson Reuters receipt would start with `TR-`. A Harvey receipt would start with `HARVEY-`. The verifier accepts any prefix. The standard is genuinely vendor-neutral.
 
-## How It Works
+We do not want to be another platform. We want to be the receipt layer underneath all of them.
 
-A verification engine (ours or anyone's) receives an artifact
-and source documents. It runs a deterministic audit. It produces
-an SVR with the results, signs it with Ed25519, and emits the
-receipt.
+## The Agent Economy Needs This
 
-The recipient can verify the receipt with a single command:
+When a human lawyer drafts a brief, there is a signature line. When a financial advisor recommends a trade, there is a compliance record. When a doctor prescribes medication, there is a chart entry.
 
+When an AI agent takes an action, there should be a receipt.
+
+Not a log line that lives inside the platform's database. A signed, portable, independently verifiable receipt that travels with the work product and can be checked by anyone who touches it downstream.
+
+As agents hand work to other agents, as outputs cross platform boundaries, as regulatory frameworks like the Colorado AI Act and EU AI Act Article 15(4) begin demanding evidence of "reasonable care" and "accuracy measures," the question will not be whether you verified. It will be whether you can prove it.
+
+A receipt is proof. A log line is a claim.
+
+## Where It Works
+
+The SVR format is domain-agnostic. The same envelope carries receipts across every vertical where AI output carries professional or regulatory consequences:
+
+Legal filings. SOC 2 readiness. SEC disclosures. Healthcare protocols. Defense workflows. Vendor risk assessments. AI governance compliance. RAG grounding verification. Scientific integrity. Autonomous systems safety.
+
+Each vertical has its own extension schema with domain-specific fields, remediation vocabulary, and disclaimer language. The core receipt format is shared. One protocol. Many vertical extensions.
+
+## The Numbers
+
+The SATYA engine produces SVR receipts in 18.6 ms. Twelve constraints checked. Five obstruction-producing failures detected. Five proof sketches with Dirichlet energy localization. Five priority-ordered repairs. Zero Purity Gate violations. Valid Ed25519 signature. Valid receipt structure. Verified independently by a standalone tool with zero engine dependencies.
+
+That is not a benchmark on a cluster. That is a laptop.
+
+## Try It
+
+Verify a receipt:
 ```
 pip install svr-verify
 svr-verify receipt.svr.json
 ```
 
-Output:
+Read the specification:
+[SVR Spec v1.0](https://github.com/Jasonleonardvolk/sigma/blob/main/satya/spec/SVR_SPEC_v1.txt)
 
-```
-SVR Verification Report
-  Receipt ID:      SATYA-20260518-4C2388CC
-  Verdict:         contradicted
-  Items Checked:   12
-  Items Passed:    7
-  Items Failed:    5
-  Signature:       VALID
-  Structure:       VALID
-  RESULT: VALID
-```
+Browse the code:
+[github.com/Jasonleonardvolk/svr-verify](https://github.com/Jasonleonardvolk/svr-verify)
 
-The verification is purely mathematical. No network call. No API
-key. No trust in any third party except the public key of the
-issuer.
-
-## Verticals
-
-The SVR format is domain-agnostic. The same envelope carries
-receipts for:
-
-- Legal citation audits
-- SOC 2 readiness verification
-- SEC filing consistency analysis
-- Healthcare compliance
-- Defense source-chain audits
-- Procurement and vendor risk
-- AI governance compliance
-- RAG grounding verification
-- Scientific integrity checks
-- Autonomous systems safety
-- Protein structure validation
-- Agent action verification
-
-Each vertical has its own extension schema with domain-specific
-fields, its own disclaimer language, and its own remediation
-vocabulary. The core receipt format is shared.
-
-One protocol. Many vertical extensions.
-
-## The Agent Economy Needs Receipts
-
-When a human drafts a brief, there's a signature line. When a
-financial advisor recommends a trade, there's a compliance record.
-When a doctor prescribes medication, there's a chart entry.
-
-When an AI agent takes an action, there should be a receipt.
-
-Not a log line. Not a probability score. A signed, replayable,
-independently verifiable receipt showing what was checked, what
-failed, and whether the result is safe to rely on.
-
-That receipt should travel with the work, not die inside the
-platform that produced it. That's what SVR is for.
-
-## Get Involved
-
-The specification, schema, and verifiers are all open source:
-
-- **Specification**: [SVR Spec v1.0](https://github.com/Jasonleonardvolk/sigma/blob/main/satya/spec/SVR_SPEC_v1.txt)
-- **JSON Schema**: [svr_schema_v1.json](https://github.com/Jasonleonardvolk/sigma/blob/main/satya/spec/svr_schema_v1.json)
-- **Python verifier**: `pip install svr-verify` ([PyPI](https://pypi.org/project/svr-verify/))
-- **JavaScript verifier**: [js/svr-verify.js](https://github.com/Jasonleonardvolk/svr-verify/tree/main/js)
-- **Go verifier**: [go/svr.go](https://github.com/Jasonleonardvolk/svr-verify/tree/main/go)
-- **OpenAPI spec**: [openapi.yaml](https://github.com/Jasonleonardvolk/svr-verify/blob/main/openapi.yaml)
-- **How to Read an SVR**: [Guide](https://github.com/Jasonleonardvolk/svr-verify/blob/main/HOW_TO_READ_AN_SVR.md)
-
-If you build a verification engine and want to issue SVRs,
-implement the spec and publish your public key. That's it.
-
-If you receive SVRs and want to verify them, install the
-verifier. One command. MIT licensed. Works offline.
-
-If you want to integrate SVR verification into your platform,
-the OpenAPI spec defines the API.
+Read the guide:
+[How to Read an SVR](https://github.com/Jasonleonardvolk/svr-verify/blob/main/HOW_TO_READ_AN_SVR.md)
 
 ## The Line
 
-Do not pay for another AI answer. Pay for a receipt proving
-whether the answer is safe to rely on.
+Do not pay for another AI answer. Pay for a receipt proving whether the answer is safe to rely on.
+
+Every agent action should leave a receipt.
 
 ---
 
-*Invariant Research, 2026. invariant.pro*
+*Invariant Research, 2026. [invariant.pro](https://invariant.pro)*
 
-*The Signed Verification Receipt (SVR) specification is an open
-standard. The svr-verify tool is MIT licensed.*
-
-*The SATYA engine that produces SVRs is a commercial product of
-Invariant Research. Patent pending.*
+*The Signed Verification Receipt (SVR) specification is an open standard. The svr-verify tool is MIT licensed. The SATYA engine that produces SVRs is a commercial product of Invariant Research. Patent pending.*
