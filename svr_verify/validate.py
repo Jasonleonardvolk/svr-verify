@@ -31,6 +31,7 @@ REQUIRED_FIELDS = [
     "public_key",
     "signature",
     "signature_status",
+    "verification_method",
 ]
 
 # Required fields per checked_item
@@ -112,11 +113,11 @@ def validate_structure(receipt):
             "Unrecognized major version: %s (expected 1.x)" % version
         )
 
-    # receipt_id format
+    # receipt_id format: PREFIX-YYYYMMDD-HASH8 (prefix is issuer-defined)
     rid = receipt.get("receipt_id", "")
-    if rid and not rid.startswith("SATYA-"):
+    if rid and "-" not in rid:
         errors.append(
-            "receipt_id must start with 'SATYA-': got '%s'" % rid
+            "receipt_id must contain at least one '-': got '%s'" % rid
         )
 
     # receipt_status

@@ -1,9 +1,9 @@
 Metadata-Version: 2.4
 Name: svr-verify
-Version: 1.0.0
+Version: 1.0.1
 Summary: Standalone verifier for Signed Verification Receipts (SVR). No engine dependency required.
 Author: Invariant Research
-License: MIT
+License-Expression: MIT
 Project-URL: Homepage, https://invariant.pro
 Project-URL: Repository, https://github.com/Jasonleonardvolk/svr-verify
 Project-URL: Specification, https://github.com/Jasonleonardvolk/sigma/blob/main/satya/spec/SVR_SPEC_v1.txt
@@ -11,7 +11,6 @@ Project-URL: Schema, https://github.com/Jasonleonardvolk/sigma/blob/main/satya/s
 Keywords: verification,receipt,ed25519,cryptographic,audit,compliance,svr
 Classifier: Development Status :: 4 - Beta
 Classifier: Intended Audience :: Developers
-Classifier: License :: OSI Approved :: MIT License
 Classifier: Programming Language :: Python :: 3
 Classifier: Programming Language :: Python :: 3.8
 Classifier: Programming Language :: Python :: 3.9

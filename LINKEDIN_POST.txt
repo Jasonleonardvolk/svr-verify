@@ -1,0 +1,24 @@
+Thomson Reuters, Harvey, Anthropic all verify AI output. But their verification locks you into their platform. Leave the platform, lose the verification.
+
+We just open-sourced a better way.
+
+The Signed Verification Receipt (SVR) is a cryptographically signed, portable, vendor-neutral verification artifact. Any platform can issue one. Anyone can verify one. No account, no API key, no walled garden.
+
+Today we published:
+- The SVR v1.0 specification (open standard)
+- Verifier libraries in Python, JavaScript, and Go (MIT licensed)
+- pip install svr-verify (live on PyPI now)
+- JSON Schema, JSON-LD context, and OpenAPI spec
+- A universal receipt renderer across 17 verticals
+- Adoption guide for platforms that want to issue SVRs
+
+We don't want to be another platform. We want to be the infrastructure that every platform uses.
+
+Full announcement: [Medium link here]
+Spec: github.com/Jasonleonardvolk/sigma/blob/main/satya/spec/SVR_SPEC_v1.txt
+Verifier: github.com/Jasonleonardvolk/svr-verify
+PyPI: pypi.org/project/svr-verify/
+
+Portable, cryptographically signed, vendor-neutral receipts for AI verification. Because trust shouldn't be locked inside a platform.
+
+#AIVerification #OpenStandard #LegalTech #Compliance #AIGovernance #Cybersecurity #RegTech #SVR #Ed25519 #SignedVerificationReceipt

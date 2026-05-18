@@ -1,6 +1,8 @@
 # Announcing the Signed Verification Receipt: An Open Standard for Verifiable AI
 
-Every major AI platform now claims to verify its output. Thomson
+*Portable, cryptographically signed, vendor-neutral receipts for AI verification. Because trust shouldn't be locked inside a platform.*
+
+Every major AI platform now claims to verify AI output. Thomson
 Reuters verifies citations inside CoCounsel. Harvey verifies
 legal reasoning inside Harvey. Anthropic grounds responses inside
 Claude. Billions of dollars of combined marketing spend, all
@@ -18,6 +20,8 @@ produced it.
 
 That's not a bug for them. It's the business model. Lock-in
 through trust infrastructure.
+
+We think that's the wrong architecture for a trustworthy AI ecosystem.
 
 We built something different.
 
@@ -40,8 +44,9 @@ An SVR is:
 - **Independently verifiable.** Anyone can verify an SVR without
   the engine that produced it. Install `svr-verify` (open source,
   MIT licensed, available on PyPI), point it at the receipt, and
-  get VALID or INVALID. No account. No API key. No internet
-  connection after install.
+  get VALID or INVALID. No account. No API key. The public key of
+  the issuer is embedded in the receipt or obtained once from a
+  trusted source. After that, verification is purely local.
 
 - **Vendor-neutral.** The SVR specification is an open standard.
   Any verification engine can issue SVRs. We publish the spec, the
@@ -181,6 +186,7 @@ the infrastructure that every platform uses.
 *Invariant Research, 2026. invariant.pro*
 
 *The Signed Verification Receipt (SVR) specification is an open
-standard. The svr-verify tool is MIT licensed. The SATYA engine
-that produces SVRs is a commercial product of Invariant Research.
-Patent pending.*
+standard. The svr-verify tool is MIT licensed.*
+
+*The SATYA engine that produces SVRs is a commercial product of
+Invariant Research. Patent pending.*

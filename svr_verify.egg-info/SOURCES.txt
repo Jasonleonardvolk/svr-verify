@@ -11,6 +11,7 @@ svr_verify/validate.py
 svr_verify.egg-info/PKG-INFO
 svr_verify.egg-info/SOURCES.txt
 svr_verify.egg-info/dependency_links.txt
+svr_verify.egg-info/desktop.ini
 svr_verify.egg-info/entry_points.txt
 svr_verify.egg-info/requires.txt
 svr_verify.egg-info/top_level.txt
