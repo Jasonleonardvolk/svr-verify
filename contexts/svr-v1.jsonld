@@ -1,0 +1,176 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "svr": "https://invariant.pro/ns/svr/1.0/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "sec": "https://w3id.org/security#",
+    "dc": "http://purl.org/dc/terms/",
+
+    "svr_version": {
+      "@id": "svr:version",
+      "@type": "xsd:string"
+    },
+    "receipt_id": {
+      "@id": "svr:receiptId",
+      "@type": "xsd:string"
+    },
+    "receipt_type": {
+      "@id": "svr:receiptType",
+      "@type": "xsd:string"
+    },
+    "receipt_status": {
+      "@id": "svr:receiptStatus",
+      "@type": "xsd:string"
+    },
+    "mode": {
+      "@id": "svr:auditMode",
+      "@type": "xsd:string"
+    },
+
+    "input_hash": {
+      "@id": "svr:inputHash",
+      "@type": "xsd:string"
+    },
+    "source_bundle_hash": {
+      "@id": "svr:sourceBundleHash",
+      "@type": "xsd:string"
+    },
+    "graph_hash": {
+      "@id": "svr:graphHash",
+      "@type": "xsd:string"
+    },
+    "decomposition_hash": {
+      "@id": "svr:decompositionHash",
+      "@type": "xsd:string"
+    },
+
+    "verdict": {
+      "@id": "svr:verdict",
+      "@type": "xsd:string"
+    },
+    "safe_to_rely": {
+      "@id": "svr:safeToRely",
+      "@type": "xsd:boolean"
+    },
+    "filing_safety_status": {
+      "@id": "svr:filingSafetyStatus",
+      "@type": "xsd:string"
+    },
+    "reason": {
+      "@id": "svr:verdictReason",
+      "@type": "xsd:string"
+    },
+
+    "items_checked": {
+      "@id": "svr:itemsChecked",
+      "@type": "xsd:integer"
+    },
+    "items_passed": {
+      "@id": "svr:itemsPassed",
+      "@type": "xsd:integer"
+    },
+    "items_failed": {
+      "@id": "svr:itemsFailed",
+      "@type": "xsd:integer"
+    },
+    "items_excluded": {
+      "@id": "svr:itemsExcluded",
+      "@type": "xsd:integer"
+    },
+
+    "checked_items": {
+      "@id": "svr:checkedItems",
+      "@container": "@list"
+    },
+    "item_id": {
+      "@id": "svr:itemId",
+      "@type": "xsd:integer"
+    },
+    "claim_or_authority": {
+      "@id": "svr:claimOrAuthority",
+      "@type": "xsd:string"
+    },
+
+    "sheaf_metrics": {
+      "@id": "svr:sheafMetrics",
+      "@type": "@id"
+    },
+    "h1_dimension": {
+      "@id": "svr:h1Dimension",
+      "@type": "xsd:integer"
+    },
+    "obstruction_count": {
+      "@id": "svr:obstructionCount",
+      "@type": "xsd:integer"
+    },
+    "cokernel_dimension": {
+      "@id": "svr:cokernelDimension",
+      "@type": "xsd:integer"
+    },
+    "grounding_ratio": {
+      "@id": "svr:groundingRatio",
+      "@type": "xsd:decimal"
+    },
+    "total_dirichlet_energy": {
+      "@id": "svr:totalDirichletEnergy",
+      "@type": "xsd:decimal"
+    },
+
+    "timestamp_utc": {
+      "@id": "dc:created",
+      "@type": "xsd:dateTime"
+    },
+    "engine_version": {
+      "@id": "svr:engineVersion",
+      "@type": "xsd:string"
+    },
+    "policy_profile": {
+      "@id": "svr:policyProfile",
+      "@type": "xsd:string"
+    },
+    "replay_seed": {
+      "@id": "svr:replaySeed",
+      "@type": "xsd:string"
+    },
+
+    "constraint_layer_version": {
+      "@id": "svr:constraintLayerVersion",
+      "@type": "xsd:string"
+    },
+    "primitive_manifest_hash": {
+      "@id": "svr:primitiveManifestHash",
+      "@type": "xsd:string"
+    },
+
+    "supersedes": {
+      "@id": "svr:supersedes",
+      "@type": "xsd:string"
+    },
+    "supersession_reason": {
+      "@id": "svr:supersessionReason",
+      "@type": "xsd:string"
+    },
+
+    "public_key": {
+      "@id": "sec:publicKeyHex",
+      "@type": "xsd:string"
+    },
+    "signature": {
+      "@id": "sec:signatureValue",
+      "@type": "xsd:string"
+    },
+    "signature_status": {
+      "@id": "svr:signatureStatus",
+      "@type": "xsd:string"
+    },
+
+    "verify_url": {
+      "@id": "svr:verifyUrl",
+      "@type": "@id"
+    },
+    "latency_ms": {
+      "@id": "svr:latencyMs",
+      "@type": "xsd:decimal"
+    }
+  }
+}

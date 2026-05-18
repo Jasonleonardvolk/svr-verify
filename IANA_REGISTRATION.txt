@@ -1,0 +1,92 @@
+IANA Media Type Registration Application
+========================================
+
+Type name: application
+
+Subtype name: vnd.svr.receipt+json
+
+Required parameters: None
+
+Optional parameters:
+  version: SVR specification version (default "1.0")
+
+Encoding considerations:
+  Binary. The content is a JSON object encoded as UTF-8.
+  Conforms to RFC 8259 (The JavaScript Object Notation Data
+  Interchange Format).
+
+Security considerations:
+  The media type contains a JSON object with an Ed25519 digital
+  signature. The signature covers the canonical serialization of
+  the receipt content (excluding timing and presentation fields).
+  Consumers MUST verify the signature against a known public key
+  before trusting the receipt content. The receipt does not
+  contain executable code. JSON parsing SHOULD use a strict
+  parser that does not evaluate expressions.
+
+Interoperability considerations:
+  The Signed Verification Receipt (SVR) format is defined by
+  the SVR Specification v1.0, available at:
+  https://github.com/Jasonleonardvolk/sigma/blob/main/satya/spec/SVR_SPEC_v1.txt
+
+  A JSON Schema is published at:
+  https://github.com/Jasonleonardvolk/sigma/blob/main/satya/spec/svr_schema_v1.json
+
+  A JSON-LD context is published at:
+  https://github.com/Jasonleonardvolk/svr-verify/blob/main/contexts/svr-v1.jsonld
+
+  Open-source verification libraries are available for Python,
+  JavaScript, and Go at:
+  https://github.com/Jasonleonardvolk/svr-verify
+
+  The Python library is also available via PyPI:
+  pip install svr-verify
+
+Published specification:
+  SVR Specification v1.0
+  https://github.com/Jasonleonardvolk/sigma/blob/main/satya/spec/SVR_SPEC_v1.txt
+
+Applications which use this media type:
+  AI verification engines, legal technology platforms, compliance
+  audit systems, financial disclosure analysis tools, healthcare
+  documentation systems, defense source-chain verification,
+  scientific integrity checking, autonomous systems safety
+  verification.
+
+Fragment identifier considerations: None
+
+Restrictions on usage: None
+
+Additional information:
+  Deprecated alias names: application/vnd.satya.receipt+json
+  Magic number(s): None
+  File extension(s): .svr.json
+  Macintosh file type code: None
+  Object Identifiers: None
+
+Person to contact for further information:
+  Name: Jason Volk
+  Email: jason@invariant.pro
+
+Intended usage: COMMON
+
+Change controller: Invariant Research
+
+Provisional registration? No
+
+========================================
+SUBMISSION INSTRUCTIONS
+========================================
+
+Submit this form at:
+  https://www.iana.org/form/media-types
+
+Select "Vendor Tree" (vnd.) for the registration type.
+
+After submission, IANA will review and typically respond within
+2-4 weeks. The registration is permanent once approved.
+
+Note: The deprecated alias "application/vnd.satya.receipt+json"
+was used in SVR Spec v1.0 Section 10. Future versions of the
+spec will reference the registered IANA type
+"application/vnd.svr.receipt+json" as canonical.
