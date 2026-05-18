@@ -1,28 +1,23 @@
-Thomson Reuters, Harvey, Anthropic, ServiceNow, Salesforce. Every platform building AI agents is now racing to solve the same problem: how do you prove the output is safe to rely on?
+Your AI agent just drafted a contract, reviewed a filing, flagged a risk, and recommended an action.
 
-Their answer: build verification into THEIR platform. Leave the platform, lose the verification. That is lock-in through trust infrastructure.
+Can you prove any of that was verified?
 
-We just open-sourced a different answer.
+Not "the platform says it was verified." Can YOU prove it? To your auditor. To opposing counsel. To the regulator who just asked for evidence of reasonable care. To the insurer adjusting your premium based on how you govern AI output.
 
-The Signed Verification Receipt (SVR) is a cryptographically signed, portable, vendor-neutral verification artifact. Any engine can issue one. Anyone can verify one. No account, no API key, no walled garden.
+Right now, the answer is no. Every major platform verifies inside its own walls. The moment that work product leaves the platform, the verification disappears. You're left holding an output with no receipt.
 
-Every agent action should leave a receipt.
+That's the gap. Not whether AI can be verified. Whether the proof travels.
 
-Today we published:
-- The SVR v1.0 specification (open standard)
-- Verifier libraries in Python, JavaScript, and Go (MIT licensed)
-- pip install svr-verify (live on PyPI now)
-- JSON Schema, JSON-LD context, and OpenAPI spec
-- A universal receipt renderer across 17 verticals
-- Adoption guide for platforms that want to issue SVRs
+We think every agent action should leave a receipt. A signed, portable, independently verifiable receipt that says: here is what was checked, here is what failed, here is the repair path, and here is the cryptographic signature you can verify without calling us.
 
-Do not pay for another AI answer. Pay for a receipt proving whether the answer is safe to rely on.
+So we published the specification as an open standard. Any engine can issue one. Any person can verify one. Python, JavaScript, Go. MIT licensed. One command: pip install svr-verify.
 
-Full announcement: [Medium link]
-Spec: github.com/Jasonleonardvolk/sigma/blob/main/satya/spec/SVR_SPEC_v1.txt
-Verifier: github.com/Jasonleonardvolk/svr-verify
-PyPI: pypi.org/project/svr-verify/
+The receipt declares its verification method. Deterministic or probabilistic. Zero parameters or seventy billion. Replayable or not. That field is required, not optional. The market reads it. The insurer reads it. The regulator reads it.
 
-SATYA is the receipt layer for AI trust. One protocol. Many verticals.
+We are not building another platform. We are building the receipt layer underneath all of them.
 
-#AIVerification #OpenStandard #AIGovernance #AgentEconomy #Compliance #LegalTech #Cybersecurity #RegTech #SVR #TrustInfrastructure #SignedVerificationReceipt
+Spec: github.com/Jasonleonardvolk/svr-verify
+PyPI: pypi.org/project/svr-verify
+invariant.pro
+
+#AIGovernance #AgentEconomy #TrustInfrastructure #Compliance #AIVerification #LegalTech #RegTech #Cybersecurity
