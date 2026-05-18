@@ -1,8 +1,12 @@
-Thomson Reuters, Harvey, Anthropic all verify AI output. But their verification locks you into their platform. Leave the platform, lose the verification.
+Thomson Reuters, Harvey, Anthropic, ServiceNow, Salesforce. Every platform building AI agents is now racing to solve the same problem: how do you prove the output is safe to rely on?
 
-We just open-sourced a better way.
+Their answer: build verification into THEIR platform. Leave the platform, lose the verification. That is lock-in through trust infrastructure.
 
-The Signed Verification Receipt (SVR) is a cryptographically signed, portable, vendor-neutral verification artifact. Any platform can issue one. Anyone can verify one. No account, no API key, no walled garden.
+We just open-sourced a different answer.
+
+The Signed Verification Receipt (SVR) is a cryptographically signed, portable, vendor-neutral verification artifact. Any engine can issue one. Anyone can verify one. No account, no API key, no walled garden.
+
+Every agent action should leave a receipt.
 
 Today we published:
 - The SVR v1.0 specification (open standard)
@@ -12,13 +16,13 @@ Today we published:
 - A universal receipt renderer across 17 verticals
 - Adoption guide for platforms that want to issue SVRs
 
-We don't want to be another platform. We want to be the infrastructure that every platform uses.
+Do not pay for another AI answer. Pay for a receipt proving whether the answer is safe to rely on.
 
-Full announcement: [Medium link here]
+Full announcement: [Medium link]
 Spec: github.com/Jasonleonardvolk/sigma/blob/main/satya/spec/SVR_SPEC_v1.txt
 Verifier: github.com/Jasonleonardvolk/svr-verify
 PyPI: pypi.org/project/svr-verify/
 
-Portable, cryptographically signed, vendor-neutral receipts for AI verification. Because trust shouldn't be locked inside a platform.
+SATYA is the receipt layer for AI trust. One protocol. Many verticals.
 
-#AIVerification #OpenStandard #LegalTech #Compliance #AIGovernance #Cybersecurity #RegTech #SVR #Ed25519 #SignedVerificationReceipt
+#AIVerification #OpenStandard #AIGovernance #AgentEconomy #Compliance #LegalTech #Cybersecurity #RegTech #SVR #TrustInfrastructure #SignedVerificationReceipt

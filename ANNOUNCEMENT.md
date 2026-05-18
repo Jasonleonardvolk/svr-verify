@@ -1,27 +1,32 @@
-# Announcing the Signed Verification Receipt: An Open Standard for Verifiable AI
+# Announcing the Signed Verification Receipt: Trust Infrastructure for the Agent Economy
 
 *Portable, cryptographically signed, vendor-neutral receipts for AI verification. Because trust shouldn't be locked inside a platform.*
 
-Every major AI platform now claims to verify AI output. Thomson
-Reuters verifies citations inside CoCounsel. Harvey verifies
-legal reasoning inside Harvey. Anthropic grounds responses inside
-Claude. Billions of dollars of combined marketing spend, all
-converging on one message: you need to verify AI output before
-you trust it.
+As AI agents move from drafting to acting, enterprises need a
+verification layer that produces signed evidence of what was
+checked, what failed, what was repaired, and whether the result
+is safe to rely on.
 
-They're right. Verification matters.
+Every major platform is racing to solve this. Thomson Reuters
+verifies citations inside CoCounsel. Salesforce built a trust
+layer into Agentforce. ServiceNow is expanding AI Control Tower.
+Harvey, Legora, and dozens of others are embedding verification
+into their agent workflows. Billions of dollars of combined
+investment, all converging on one message: you cannot deploy
+AI agents without verification.
+
+They're right. Verification is mandatory.
 
 But their verification dies when you leave their walled garden.
-If you use CoCounsel and switch to Harvey, your verification
-history disappears. If you export a brief from Harvey and hand
-it to co-counsel at another firm, they can't check whether it
-was verified. The verification is locked to the platform that
-produced it.
+If you switch platforms, your verification history disappears.
+If an agent in one system hands work to an agent in another,
+the verification doesn't travel. The trust is locked to the
+platform that produced it.
 
-That's not a bug for them. It's the business model. Lock-in
-through trust infrastructure.
+That is lock-in through trust infrastructure.
 
-We think that's the wrong architecture for a trustworthy AI ecosystem.
+We think that's the wrong architecture for an interoperable
+agent economy.
 
 We built something different.
 
@@ -34,9 +39,10 @@ specific result.
 
 An SVR is:
 
-- **Portable.** It's a JSON file. Take it anywhere. Email it. File
-  it with a court. Attach it to an audit package. It is not locked
-  to any platform.
+- **Portable.** It's a JSON file. Take it anywhere. Attach it to
+  an audit package, a court filing, an agent handoff, a vendor
+  assessment, a regulatory submission. It is not locked to any
+  platform.
 
 - **Signed.** Ed25519 digital signature. Unforgeable. If a single
   byte changes, the signature breaks.
@@ -58,15 +64,15 @@ An SVR is:
 
 Every SVR answers five questions:
 
-1. **What was checked?** A table of every claim, citation, or
-   control that was evaluated.
+1. **What was checked?** A table of every claim, citation, control,
+   constraint, or agent output that was evaluated.
 
 2. **What failed?** Per-item verdicts with explanations.
 
 3. **What was excluded?** Explicit scope boundaries.
 
-4. **Is it safe to rely on?** A deterministic yes/no/review answer
-   with the mathematical basis for the decision.
+4. **Is it safe to rely on?** A deterministic verdict with the
+   mathematical basis for the decision.
 
 5. **Can the receipt be independently verified?** Yes. Always.
 
@@ -76,6 +82,11 @@ priority remediation plans (what to fix first, ordered by risk
 reduction per unit effort), and assurance completion packs (the
 auditor handoff: evidence to collect, owners to assign, policies
 to update, closure receipt required).
+
+Every receipt also declares its `verification_method`: whether
+the engine used deterministic algebraic verification, probabilistic
+LLM checking, rule-based analysis, or human review. This field
+is required, not optional. The market can read it.
 
 ## Why Open?
 
@@ -87,16 +98,14 @@ a product. Products compete on features, price, and marketing.
 An open receipt format is infrastructure. Infrastructure gets
 adopted.
 
-We want every AI platform to issue Signed Verification Receipts.
+We want every AI platform, every agent framework, and every
+enterprise governance stack to issue Signed Verification Receipts.
 Not because they use our engine (though we'd welcome that), but
-because their customers deserve portable, verifiable, auditable
-proof that the AI's work was checked.
+because every agent action should leave a receipt.
 
-If Thomson Reuters, Harvey, Anthropic, Legora, or any other
-platform wants to issue SVRs, the specification is public, the
-schema is published, and the verifier is free. We don't want to
-be another platform. We want to be the interoperability layer
-that every platform uses.
+If Thomson Reuters, Salesforce, ServiceNow, Harvey, Anthropic,
+or any other platform wants to issue SVRs, the specification is
+public, the schema is published, and the verifier is free.
 
 ## How It Works
 
@@ -152,6 +161,23 @@ Each vertical has its own extension schema with domain-specific
 fields, its own disclaimer language, and its own remediation
 vocabulary. The core receipt format is shared.
 
+One protocol. Many vertical extensions.
+
+## The Agent Economy Needs Receipts
+
+When a human drafts a brief, there's a signature line. When a
+financial advisor recommends a trade, there's a compliance record.
+When a doctor prescribes medication, there's a chart entry.
+
+When an AI agent takes an action, there should be a receipt.
+
+Not a log line. Not a probability score. A signed, replayable,
+independently verifiable receipt showing what was checked, what
+failed, and whether the result is safe to rely on.
+
+That receipt should travel with the work, not die inside the
+platform that produced it. That's what SVR is for.
+
 ## Get Involved
 
 The specification, schema, and verifiers are all open source:
@@ -175,11 +201,8 @@ the OpenAPI spec defines the API.
 
 ## The Line
 
-Every legal AI platform now claims to verify. But their
-verification dies when you leave their walled garden. Signed
-Verification Receipts are portable, signed, and verifiable by
-anyone. We don't want to be another platform. We want to be
-the infrastructure that every platform uses.
+Do not pay for another AI answer. Pay for a receipt proving
+whether the answer is safe to rely on.
 
 ---
 

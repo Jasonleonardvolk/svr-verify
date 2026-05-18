@@ -1,16 +1,19 @@
 # How to Read a Signed Verification Receipt (SVR)
 
 A Signed Verification Receipt is a cryptographically signed document
-that proves an AI-generated artifact was verified against source
-evidence before submission. This guide explains what each section
-means and what to do with it.
+that proves an AI-generated or human-submitted artifact was verified
+against source evidence before use. This guide explains what each
+section means and what to do with it.
 
 ## Who This Is For
 
-- Lawyers reviewing AI-assisted briefs
+- AI platform operators verifying agent outputs
 - Compliance officers evaluating SOC 2 readiness
+- Lawyers reviewing AI-assisted briefs
 - Auditors verifying control evidence
-- Risk managers reviewing SEC filings
+- Risk managers reviewing SEC filings or vendor assessments
+- Security engineers integrating verification into agent pipelines
+- Procurement teams reviewing vendor risk artifacts
 - Anyone who receives an SVR and needs to understand it
 
 ## The Five Questions Every SVR Answers

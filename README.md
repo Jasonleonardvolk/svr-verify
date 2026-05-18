@@ -2,6 +2,8 @@
 
 Standalone verifier for **Signed Verification Receipts (SVR)**.
 
+Trust infrastructure for the agent economy. Every agent action should leave a receipt.
+
 No SATYA engine required. No SIGMA dependency. Just the receipt and the public key.
 
 ## Install
