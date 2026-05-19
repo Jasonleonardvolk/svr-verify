@@ -1,0 +1,147 @@
+======================================================================
+DAY 2: Security/Infra Angle
+======================================================================
+
+Certificate Transparency changed the web. Before CT, a certificate authority could quietly issue a fraudulent certificate and nobody would know until the damage was done. After CT, every certificate goes into a public, append-only, independently auditable log. Browsers refuse certificates that aren't logged.
+
+AI verification has the same problem today that SSL had before CT.
+
+Your AI agent verifies an output. Where does that proof go? Into the platform's internal database. Nobody outside the platform can audit it. Nobody can prove it happened. Nobody can detect if the platform quietly changed its story.
+
+We built a transparency log for AI verification receipts. Append-only. Merkle tree inclusion proofs. Signed checkpoints. Witness cosigning for split-view defense. Static tiles served via CDN so anyone can mirror the entire log.
+
+The receipt goes in. The hash is public. The content stays private. The proof is permanent.
+
+87 tests passing. SHA-256 domain-separated hashing. Ed25519 signatures. Boring cryptographic infrastructure. The kind of boring that keeps you safe.
+
+Spec: github.com/Jasonleonardvolk/svr-verify
+invariant.pro
+
+#AIGovernance #CertificateTransparency #TrustInfrastructure #Cybersecurity #ZeroTrust
+
+
+======================================================================
+DAY 3: Legal Angle
+======================================================================
+
+Sullivan & Cromwell filed a brief with a hallucinated citation in federal bankruptcy court. The partner called it "deeply regrettable."
+
+Deborah Leslie was suspended from practicing before the Georgia Supreme Court after her AI-generated filing contained fabricated case law.
+
+In both cases, the question after the fact was: did anyone check this before it went out?
+
+The harder question: can you prove it?
+
+A platform audit log says "we checked it." A signed verification receipt says what was checked, what failed, what was flagged, and whether the result was safe to file. It carries an Ed25519 signature that anyone can verify independently. It travels with the brief, not inside the platform that drafted it.
+
+If the check happened, the receipt proves it. If it didn't, the absence of a receipt is its own answer.
+
+The next fake-citation scandal will not be excused by "our platform said it checked." The court will ask for the receipt.
+
+pip install svr-verify
+github.com/Jasonleonardvolk/svr-verify
+
+#LegalTech #AIVerification #LegalAI #Compliance #AIGovernance
+
+
+======================================================================
+DAY 4: Insurance/Risk Angle
+======================================================================
+
+Here is a question for anyone pricing AI liability coverage:
+
+Two firms both use AI agents to draft, review, and file professional work product. Both claim to verify AI output. You are the underwriter. How do you distinguish them?
+
+Firm A produces a signed verification receipt for every AI output. The receipt declares verification_method: deterministic_algebraic. Parameter count: zero. Deterministic replay: true. Same input, same result, every time. The receipt is independently verifiable with a single command.
+
+Firm B says "our platform has built-in verification." No portable receipt. No declared method. No way to independently confirm what was checked or how.
+
+Which firm gets the lower premium?
+
+AI governance premiums will eventually depend on portable, verifiable proof. Not policy PDFs. Not vendor assurances. Signed receipts with declared methodology that an actuary can read, compare, and price.
+
+The SVR specification makes that comparison machine-readable today.
+
+github.com/Jasonleonardvolk/svr-verify
+invariant.pro
+
+#InsurTech #AIRisk #AIGovernance #Compliance #RiskManagement #TrustInfrastructure
+
+
+======================================================================
+DAY 5: Developer Angle
+======================================================================
+
+Verify an AI receipt offline with one command.
+
+pip install svr-verify
+svr-verify receipt.svr.json
+
+That's it. No API key. No account. No network call after install. The verifier checks the Ed25519 signature against the canonical serialization, validates 22 required fields, enforces the count invariant (checked = passed + failed + excluded), and returns VALID or INVALID.
+
+For CI/CD:
+svr-verify receipt.svr.json --quiet
+Exit code 0 = valid. Exit code 1 = invalid.
+
+For Python:
+from svr_verify import verify
+result = verify("receipt.svr.json")
+
+The receipt carries a required field called verification_method. It tells you whether the engine used deterministic math, an LLM, a rule engine, or a human. That field is what makes receipts from different engines comparable without trusting either engine.
+
+MIT licensed. Zero engine dependencies. The whole point is adoption.
+
+PyPI: pypi.org/project/svr-verify
+Source: github.com/Jasonleonardvolk/svr-verify
+
+#OpenSource #Python #AIVerification #DevTools #Security
+
+
+======================================================================
+DAY 6: Standards Angle
+======================================================================
+
+Why do AI agents need a vendor-neutral receipt format?
+
+Because agents are crossing tool boundaries.
+
+An agent in Platform A drafts a document. An agent in Platform B reviews it. An agent in Platform C files it. Each platform may verify its own step internally. But the verification from Platform A does not travel to Platform B. The proof dies at the boundary.
+
+Now the human at the end of the chain holds a filed document and cannot independently confirm that any step was verified. Three platforms touched it. Zero portable receipts exist.
+
+The Signed Verification Receipt (SVR) is an open standard that solves this. A JSON file, signed with Ed25519, carrying the full audit result. It travels with the work product. Any platform can issue one. Any person can verify one.
+
+The receipt ID prefix is issuer-defined. SATYA receipts start with SATYA-. A Thomson Reuters receipt would start with TR-. A Harvey receipt would start with HARVEY-. The verifier accepts any prefix. The standard is genuinely neutral.
+
+One format. Many issuers. The proof travels.
+
+Spec: github.com/Jasonleonardvolk/svr-verify
+IANA media type registration: submitted
+
+#OpenStandard #AIGovernance #AgentEconomy #Interoperability #TrustInfrastructure
+
+
+======================================================================
+DAY 7: SATYA/SIGMA Moat Angle
+======================================================================
+
+Every signed verification receipt declares its verification_method. That field is required, not optional.
+
+deterministic_algebraic: zero probabilistic components. Zero parameters. Same input, same result, every time. Replayable by anyone with the engine version and the inputs.
+
+probabilistic_llm: a large language model is in the verification loop. Seventy billion parameters. Different run, potentially different result. Not independently replayable.
+
+Both methods produce a signed receipt. Both receipts verify with the same tool. Both carry the same structural fields.
+
+But the declared method is permanent. It is signed into the receipt. It cannot be changed after issuance without breaking the signature.
+
+When a regulator asks for evidence of "reasonable care," when an insurer prices AI liability, when an auditor compares two verification approaches side by side, that field is what they read.
+
+The receipt does not argue which method is better. It just declares which method was used. The market decides.
+
+SATYA produces receipts in 18.6 ms. Zero parameters. Deterministic replay. Sheaf cohomology for structural contradiction detection. The receipts say so, permanently, on the record.
+
+github.com/Jasonleonardvolk/svr-verify
+invariant.pro
+
+#AIVerification #DeterministicAI #TrustInfrastructure #AIGovernance #Compliance
