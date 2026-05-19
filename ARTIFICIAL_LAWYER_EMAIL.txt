@@ -1,0 +1,21 @@
+Subject: Published open SVR spec for portable AI verification receipts
+
+Richard,
+
+Following up because the artifact is now public.
+
+I published SVR, an open signed receipt format for AI work product. The idea is simple: if a legal AI agent drafts, reviews, retrieves, or validates something, the proof should travel with the work product instead of remaining inside the vendor platform.
+
+The receipt declares what was checked, what failed, what evidence was used, whether the method was deterministic or probabilistic, and whether the result can be independently replayed. The Python verifier is MIT licensed and on PyPI.
+
+This is directly relevant to the Claude/CoCounsel/Harvey moment: agents are crossing tool boundaries, but verification records are still platform-bound.
+
+Spec and code: https://github.com/Jasonleonardvolk/svr-verify
+Guide: https://github.com/Jasonleonardvolk/svr-verify/blob/main/HOW_TO_READ_AN_SVR.md
+Full write-up: [Medium link]
+
+Happy to send a sample receipt if useful.
+
+Jason Volk
+Invariant Research
+invariant.pro

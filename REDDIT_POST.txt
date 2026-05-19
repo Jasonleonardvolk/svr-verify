@@ -1,0 +1,22 @@
+TITLE: AI agents are starting to act across tools. Should verification travel with the output?
+
+BODY:
+
+Most AI platforms keep verification and audit data inside their own product boundary. But if an agent drafts a filing, reviews a contract, or flags a compliance risk, the output often leaves the platform while the proof stays behind.
+
+The platform log proves something happened inside a platform. A portable receipt proves what happened after the work leaves it.
+
+I published an open signed receipt format for AI work product called SVR (Signed Verification Receipt). The receipt declares what was checked, what failed, what evidence was used, whether the verification was deterministic or probabilistic, and whether it can be replayed independently.
+
+The Python verifier is MIT licensed and on PyPI:
+pip install svr-verify
+
+Spec: https://github.com/Jasonleonardvolk/svr-verify
+Guide: https://github.com/Jasonleonardvolk/svr-verify/blob/main/HOW_TO_READ_AN_SVR.md
+
+Curious whether people think this should be a vendor-neutral layer or whether platform-native audit logs are enough for the regulatory and insurance requirements coming in 2026.
+
+---
+
+POST TO: r/MachineLearning and r/artificial
+FLAIR: [D] Discussion (on r/MachineLearning)

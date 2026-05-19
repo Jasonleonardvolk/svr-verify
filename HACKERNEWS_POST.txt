@@ -1,0 +1,47 @@
+TITLE: Show HN: Open standard for signed AI verification receipts
+
+BODY:
+
+I built SVR, an open receipt format for AI work product.
+
+The problem: AI agents are starting to draft, review, retrieve, flag risk, and recommend actions, but the verification record usually stays inside the platform that performed the work. Once the artifact leaves the platform, the proof does not travel with it.
+
+SVR is a signed, portable JSON receipt that declares:
+- what was checked
+- what passed or failed
+- what evidence was used
+- which verification method was used (deterministic, probabilistic, rule-based, human)
+- whether the result is deterministic and replayable
+- signature and verifier metadata
+
+The Python verifier is MIT licensed.
+
+Install:
+pip install svr-verify
+
+Verify:
+svr-verify receipt.svr.json
+
+Repo: https://github.com/Jasonleonardvolk/svr-verify
+Spec: https://github.com/Jasonleonardvolk/sigma/blob/main/satya/spec/SVR_SPEC_v1.txt
+PyPI: https://pypi.org/project/svr-verify/
+
+This is not another AI platform. It is an attempt to make verification portable across platforms.
+
+---
+
+FIRST COMMENT (post immediately after submission):
+
+A few implementation details:
+
+- Receipts are signed with Ed25519. The canonical serialization is deterministic JSON (sorted keys, compact separators, UTF-8, explicit excluded-fields list).
+
+- Each receipt declares verification_method: deterministic_algebraic, probabilistic_llm, deterministic_rule_based, or human_review. The goal is not to claim every verifier is equal. The goal is to expose the method so downstream users, auditors, insurers, and regulators can distinguish deterministic/replayable receipts from platform-dependent assertions.
+
+- The verifier has no dependency on the SATYA engine. It checks the Ed25519 signature, validates 22 required fields, enforces the count invariant (checked = passed + failed + excluded), and reports VALID or INVALID.
+
+- The next layer is an append-only transparency log for receipts, modeled on Certificate Transparency (RFC 6962): Merkle/MMR accumulator, static tiles for CDN distribution, signed checkpoints, and witness cosigning for split-view defense. 87 tests passing on that layer now.
+
+- The SATYA engine that produces receipts uses sheaf cohomology for deterministic contradiction detection. The receipts include proof sketches showing WHY something failed (Dirichlet energy localization), not just THAT it failed. Happy to discuss the math if anyone is curious.
+
+Source for the engine: https://github.com/Jasonleonardvolk/sigma

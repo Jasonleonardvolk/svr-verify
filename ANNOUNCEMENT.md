@@ -4,7 +4,7 @@
 
 Last week, Anthropic connected Claude to Westlaw, DocuSign, Everlaw, and 20 other legal platforms. Thomson Reuters rebuilt CoCounsel on Claude's agent SDK. Harvey hit an $11 billion valuation. Salesforce made Agentforce the center of its AI strategy. ServiceNow is expanding AI Control Tower.
 
-The message from every direction is the same: AI agents are no longer drafting. They are acting. Reviewing contracts. Flagging risks. Filing documents. Making decisions that carry professional, legal, and financial consequences.
+Every major platform is moving toward internal verification, validation, grounding, review, or audit trails.
 
 Here is the question nobody answered last week:
 
@@ -14,7 +14,7 @@ Not the log line inside the platform. Not the confidence score the model assigne
 
 The one you hand to opposing counsel. The one the auditor asks for. The one your insurer reads when adjusting your premium. The one the regulator demands when enforcement starts.
 
-That receipt does not exist today. Not because verification is hard. Every major platform now verifies. The problem is that their verification lives inside their walls. The moment your work product leaves the platform, the verification disappears. You are holding an AI-generated artifact with no proof that anyone checked it.
+That receipt does not exist as a portable, vendor-neutral layer today. Not because verification is hard. Every major platform now verifies. The problem is that their verification lives inside their walls. The moment your work product leaves the platform, the verification disappears. You are holding an AI-generated artifact with no proof that anyone checked it.
 
 Switch from CoCounsel to Harvey? Your verification history is gone. Export a brief and send it to co-counsel at another firm? They cannot confirm it was verified. Hand an agent's output from one system to an agent in another? The trust does not transfer.
 
@@ -60,7 +60,9 @@ Nobody has to argue about which approach is better. The receipts speak for thems
 
 A proprietary receipt format is a product. Products compete on features, price, and marketing. An open receipt format is infrastructure. Infrastructure gets adopted.
 
-The SVR specification is published. The JSON schema is published. Verifier libraries exist in Python, JavaScript, and Go. An OpenAPI spec defines the verification API. Everything is MIT licensed.
+The SVR specification is published. The JSON schema is published. The Python verifier is live on PyPI. JavaScript and Go
+verifier libraries are in the repository for cross-platform
+verification across standard enterprise stacks. An OpenAPI spec defines the verification API. Everything is MIT licensed.
 
 Any verification engine can issue SVRs. Thomson Reuters could issue them from CoCounsel. Harvey could issue them from their platform. Salesforce could issue them from Agentforce. The specification does not care who built the engine. It cares that the receipt is signed, structured, and verifiable.
 
