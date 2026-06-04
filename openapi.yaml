@@ -33,15 +33,10 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/vnd.svr.receipt+json:
             schema:
               type: object
-              required:
-                - receipt
-              properties:
-                receipt:
-                  description: The full SVR JSON object to verify.
-                  type: object
+              description: The full SVR JSON object to verify.
       responses:
         "200":
           description: Verification result (valid or invalid).

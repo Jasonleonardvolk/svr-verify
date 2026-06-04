@@ -1,0 +1,14 @@
+IANA has registered application/vnd.svr.receipt+json as the media type for SVR receipts.
+
+That may sound small, but it matters. SATYA/SIGMA receipts are not meant to be screenshots, logs, PDFs, or governance theater. They are machine-readable verification artifacts: signed, replayable, deterministic records of what was checked, what evidence was used, what contradictions were found, and what result was produced.
+
+A registered media type means SVR receipts can now move through APIs, underwriting systems, audit workflows, agent platforms, compliance tooling, and claims pipelines as a first-class internet object. Any system that speaks HTTP can serve and consume SVR receipts using the standard Content-Type header, with no proprietary format negotiation, no vendor SDK, and no platform lock-in.
+
+This is the boring infrastructure layer that trust eventually depends on. Not a confidence score. Not a dashboard. Not a post-hoc explanation. A receipt.
+
+IANA registry: http://www.iana.org/assignments/media-types
+SVR specification: https://github.com/Jasonleonardvolk/sigma/blob/main/satya/spec/SVR_SPEC_v1.txt
+Verifier (open source, MIT): pip install svr-verify
+Receipt renderer: https://invariant.pro/receipts/receipt-svr.html
+
+#AIVerification #OpenStandard #IANA #LegalTech #Compliance #AIGovernance #Cybersecurity #RegTech #SVR #SignedVerificationReceipt #deterministic
