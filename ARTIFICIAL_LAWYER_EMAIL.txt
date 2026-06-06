@@ -10,6 +10,8 @@ The receipt declares what was checked, what failed, what evidence was used, whet
 
 This is directly relevant to the Claude/CoCounsel/Harvey moment: agents are crossing tool boundaries, but verification records are still platform-bound.
 
+The story angle is not "another legal AI tool"; it is portable proof for legal AI work product.
+
 Spec and code: https://github.com/Jasonleonardvolk/svr-verify
 Guide: https://github.com/Jasonleonardvolk/svr-verify/blob/main/HOW_TO_READ_AN_SVR.md
 Full write-up: [Medium link]

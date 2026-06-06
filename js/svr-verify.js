@@ -44,7 +44,9 @@
         'receipt_status',
         'latency_ms',
         'retrieval_ms',
-        'compute_ms'
+        'compute_ms',
+        'evaluation',
+        'total_time_ms'
     ];
 
     // Required top-level fields (SVR Spec Section 3)
@@ -223,10 +225,10 @@
             errors.push('Unrecognized major version: ' + version);
         }
 
-        // receipt_id format
+        // receipt_id format: PREFIX-YYYYMMDD-HASH8 (prefix is issuer-defined)
         var rid = receipt.receipt_id || '';
-        if (rid && rid.indexOf('SATYA-') !== 0) {
-            errors.push("receipt_id must start with 'SATYA-': " + rid);
+        if (rid && rid.indexOf('-') === -1) {
+            errors.push("receipt_id must contain at least one '-': " + rid);
         }
 
         // Count invariant
@@ -266,6 +268,6 @@
         validateReceipt: validateReceipt,
         EXCLUDED_FIELDS: EXCLUDED_FIELDS,
         REQUIRED_FIELDS: REQUIRED_FIELDS,
-        version: '1.0.0'
+        version: '1.0.3'
     };
 });

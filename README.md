@@ -103,6 +103,7 @@ SVRs are:
 - **Signed**: Ed25519, unforgeable
 - **Independently verifiable**: anyone with this library can check one
 - **Vendor-neutral**: any compliant engine may issue SVRs
+- **IANA-registered**: `application/vnd.svr.receipt+json` ([IANA media types](http://www.iana.org/assignments/media-types))
 
 ## Specification
 

@@ -10,6 +10,7 @@
 package svr
 
 import (
+	"bytes"
 	"crypto/ed25519"
 	"crypto/sha256"
 	"encoding/hex"
@@ -30,6 +31,8 @@ var ExcludedFields = map[string]bool{
 	"latency_ms":       true,
 	"retrieval_ms":     true,
 	"compute_ms":       true,
+	"evaluation":       true,
+	"total_time_ms":    true,
 }
 
 // RequiredFields per SVR Spec Section 3.
@@ -98,14 +101,19 @@ func CanonicalBytes(receipt map[string]interface{}) ([]byte, error) {
 	// Step 2: Sort keys recursively
 	sorted := sortKeysRecursive(filtered)
 
-	// Step 3: Compact JSON (json.Marshal produces sorted keys for map[string]interface{})
-	// But Go maps are unordered, so we need to use our sorted structure.
-	// json.Marshal with sorted map[string]interface{} preserves insertion order in Go 1.12+
-	data, err := json.Marshal(sorted)
-	if err != nil {
+	// Step 3: Compact JSON without HTML escaping.
+	// json.Marshal escapes &, <, and > to \u0026, \u003c, \u003e, which would
+	// diverge from the Python and JS verifiers. SetEscapeHTML(false) disables
+	// that. Encoder.Encode appends a trailing newline, so it is stripped.
+	// encoding/json sorts map keys on its own; sortKeysRecursive above makes
+	// the ordering explicit and stable.
+	var buf bytes.Buffer
+	enc := json.NewEncoder(&buf)
+	enc.SetEscapeHTML(false)
+	if err := enc.Encode(sorted); err != nil {
 		return nil, err
 	}
-	return data, nil
+	return bytes.TrimRight(buf.Bytes(), "\n"), nil
 }
 
 // CanonicalHash returns the SHA-256 hex digest of the canonical serialization.
@@ -182,10 +190,10 @@ func Validate(receipt map[string]interface{}) []string {
 		}
 	}
 
-	// receipt_id format
+	// receipt_id format: PREFIX-YYYYMMDD-HASH8 (prefix is issuer-defined)
 	if rid, ok := receipt["receipt_id"].(string); ok && rid != "" {
-		if !strings.HasPrefix(rid, "SATYA-") {
-			errors = append(errors, "receipt_id must start with 'SATYA-': "+rid)
+		if !strings.Contains(rid, "-") {
+			errors = append(errors, "receipt_id must contain at least one '-': "+rid)
 		}
 	}
 

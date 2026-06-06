@@ -12,7 +12,7 @@ We built a transparency log for AI verification receipts. Append-only. Merkle tr
 
 The receipt goes in. The hash is public. The content stays private. The proof is permanent.
 
-87 tests passing. SHA-256 domain-separated hashing. Ed25519 signatures. Boring cryptographic infrastructure. The kind of boring that keeps you safe.
+102 tests passing. SHA-256 domain-separated hashing. Ed25519 signatures. Boring cryptographic infrastructure. The kind of boring that keeps you safe.
 
 Spec: github.com/Jasonleonardvolk/svr-verify
 invariant.pro
@@ -24,13 +24,13 @@ invariant.pro
 DAY 3: Legal Angle
 ======================================================================
 
-Sullivan & Cromwell filed a brief with a hallucinated citation in federal bankruptcy court. The partner called it "deeply regrettable."
+Every fake-citation scandal has the same question underneath it:
 
-Deborah Leslie was suspended from practicing before the Georgia Supreme Court after her AI-generated filing contained fabricated case law.
+Did anyone check this before it went out?
 
-In both cases, the question after the fact was: did anyone check this before it went out?
+The harder question:
 
-The harder question: can you prove it?
+Can you prove it?
 
 A platform audit log says "we checked it." A signed verification receipt says what was checked, what failed, what was flagged, and whether the result was safe to file. It carries an Ed25519 signature that anyone can verify independently. It travels with the brief, not inside the platform that drafted it.
 

@@ -1,0 +1,62 @@
+{
+  "svr_version": "1.0",
+  "receipt_id": "SAMPLE-20260518-00000001",
+  "receipt_type": "compliance",
+  "mode": "soc2_readiness",
+  "receipt_status": "evaluation",
+  "input_hash": "abcdef0123456789",
+  "source_bundle_hash": "",
+  "verdict": "contradicted",
+  "safe_to_rely": false,
+  "filing_safety_status": "UNSAFE_TO_SUBMIT",
+  "reason": "2 of 5 constraints failed",
+  "items_checked": 5,
+  "items_passed": 3,
+  "items_failed": 2,
+  "items_excluded": 0,
+  "checked_items": [
+    {
+      "item_id": 1,
+      "claim_or_authority": "CC6.1 Access Control",
+      "verdict": "PASS",
+      "reason": "Evidence covers criterion"
+    },
+    {
+      "item_id": 2,
+      "claim_or_authority": "CC6.2 System Operations",
+      "verdict": "PASS",
+      "reason": "Evidence covers criterion"
+    },
+    {
+      "item_id": 3,
+      "claim_or_authority": "CC7.1 Change Management",
+      "verdict": "PASS",
+      "reason": "Evidence covers criterion"
+    },
+    {
+      "item_id": 4,
+      "claim_or_authority": "CC7.2 System Monitoring",
+      "verdict": "FAIL",
+      "reason": "Missing monitoring evidence for Q2"
+    },
+    {
+      "item_id": 5,
+      "claim_or_authority": "CC8.1 Risk Assessment",
+      "verdict": "FAIL",
+      "reason": "Stale risk assessment (last updated 14 months ago)"
+    }
+  ],
+  "timestamp_utc": "2026-05-18T12:00:00+00:00",
+  "engine_version": "satya/0.1.0 sigma/1.0.0",
+  "verification_method": "deterministic_algebraic",
+  "verification_parameters": {
+    "parameter_count": 0,
+    "ml_models_used": 0,
+    "gpu_required": false,
+    "training_data_required": false,
+    "deterministic_replay": true
+  },
+  "public_key": "ea06882a4b94ce0d17b3c1bbb75e2e035d8849e841f1882de4cf2b7b937e8b84",
+  "signature": "fcddaaa5daefa9752b0b817fbe63282b88b792f80861dc7ae3ba149b875ecbffd17e4d583ea114a236ac84e8768897790b6a8d698beeb5d3cbdf93272b02cd0f",
+  "signature_status": "VALID"
+}

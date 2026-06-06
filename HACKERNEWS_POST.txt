@@ -40,8 +40,8 @@ A few implementation details:
 
 - The verifier has no dependency on the SATYA engine. It checks the Ed25519 signature, validates 22 required fields, enforces the count invariant (checked = passed + failed + excluded), and reports VALID or INVALID.
 
-- The next layer is an append-only transparency log for receipts, modeled on Certificate Transparency (RFC 6962): Merkle/MMR accumulator, static tiles for CDN distribution, signed checkpoints, and witness cosigning for split-view defense. 87 tests passing on that layer now.
+- Next layer is an append-only transparency log for receipts, modeled on Certificate Transparency and modern Static CT-style logs: Merkle/MMR accumulator, static tiles for CDN distribution, signed checkpoints, and witness cosigning for split-view defense. 102 tests passing on that layer now.
 
-- The SATYA engine that produces receipts uses sheaf cohomology for deterministic contradiction detection. The receipts include proof sketches showing WHY something failed (Dirichlet energy localization), not just THAT it failed. Happy to discuss the math if anyone is curious.
+- SATYA is one issuer of these receipts. It uses a deterministic algebraic verification method, but the SVR verifier is intentionally issuer-neutral: other systems can issue receipts using rule-based, probabilistic, human-review, or other methods as long as the method is declared.
 
 Source for the engine: https://github.com/Jasonleonardvolk/sigma

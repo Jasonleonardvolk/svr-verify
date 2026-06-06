@@ -1,6 +1,6 @@
 {
   "name": "svr-verify",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Standalone Signed Verification Receipt (SVR) verifier. No engine dependency required.",
   "main": "svr-verify.js",
   "browser": "svr-verify.js",

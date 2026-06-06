@@ -17,8 +17,10 @@ from typing import Any, Dict
 
 
 # Fields excluded from canonical serialization (Section 4.1, Step 2).
-# These are either computed after signing, presentation-only,
-# or the signature itself.
+# These are either computed or set after signing, presentation-layer
+# or monetization aliases (receipt_status, evaluation),
+# hardware-dependent timing (latency_ms, retrieval_ms, compute_ms,
+# total_time_ms), or the signature itself.
 EXCLUDED_FIELDS = frozenset({
     "signature",
     "signature_status",
@@ -28,6 +30,8 @@ EXCLUDED_FIELDS = frozenset({
     "latency_ms",
     "retrieval_ms",
     "compute_ms",
+    "evaluation",
+    "total_time_ms",
 })
 
 

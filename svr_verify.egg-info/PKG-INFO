@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: svr-verify
-Version: 1.0.1
+Version: 1.0.3
 Summary: Standalone verifier for Signed Verification Receipts (SVR). No engine dependency required.
 Author: Invariant Research
 License-Expression: MIT
@@ -28,6 +28,8 @@ Dynamic: license-file
 # svr-verify
 
 Standalone verifier for **Signed Verification Receipts (SVR)**.
+
+Trust infrastructure for the agent economy. Every agent action should leave a receipt.
 
 No SATYA engine required. No SIGMA dependency. Just the receipt and the public key.
 
@@ -128,6 +130,7 @@ SVRs are:
 - **Signed**: Ed25519, unforgeable
 - **Independently verifiable**: anyone with this library can check one
 - **Vendor-neutral**: any compliant engine may issue SVRs
+- **IANA-registered**: `application/vnd.svr.receipt+json` ([IANA media types](http://www.iana.org/assignments/media-types))
 
 ## Specification
 

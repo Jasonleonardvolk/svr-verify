@@ -1,12 +1,75 @@
+============================================================
+MEDIUM PUBLISHING NOTES (remove everything above the line
+before posting)
+============================================================
+
+TITLE (paste into Medium's title field):
+  Your AI Agent Just Took an Action. Where Is the Receipt?
+
+SUBTITLE (paste into Medium's subtitle field):
+  The NSA says MCP deployments need signed verification
+  receipts. Here is the open standard.
+
+TAGS (select these 5 in Medium's tag picker, in order):
+  1. Artificial Intelligence
+  2. Cybersecurity
+  3. AI Governance
+  4. Legal Tech
+  5. MCP
+
+PUBLISHING CHECKLIST:
+  [ ] Create free Medium account at medium.com (use jason@invariant.pro)
+  [ ] Paste everything below the cut line into a new story
+  [ ] Add the 5 tags above
+  [ ] Set the title and subtitle as shown
+  [ ] Under story settings: do NOT paywall this post (maximize
+      reach on your first post; you want reads, not pennies)
+  [ ] Publish, then immediately share the Medium link on LinkedIn
+      (initial engagement in the first 4 hours drives the
+      recommendation algorithm)
+
+OPTIONAL HIGH-LEVERAGE MOVE:
+  Submit this story to a Medium publication before self-publishing.
+  Publications with established audiences will get 10-50x the reads.
+  Top candidates (all accept outside submissions):
+    - Towards Data Science (largest tech publication on Medium)
+    - HackerNoon (accepts security/infrastructure pieces)
+    - The Startup (broad tech audience)
+    - Better Programming (developer-focused)
+  Each has a submission process on their Medium publication page.
+  Trade-off: publication review adds 1-7 days of delay but massively
+  increases distribution. Self-publishing is instant but starts from
+  zero audience.
+
+WHAT CHANGED FROM THE ORIGINAL ANNOUNCEMENT.md:
+  1. Added NSA MCP security guidance as the opening hook (May 20,
+     2026 publication, 13 days ago). This is the single biggest
+     change: it transforms the post from a product announcement
+     into a timely response to national security guidance.
+  2. Removed "Last week" temporal reference (it was stale).
+  3. Fixed banned phrase: "That is a laptop" -> "One CPU core.
+     No GPU."
+  4. Added NSA/CoSAI reference in the closing section.
+  5. Tightened the opening flow.
+  The original ANNOUNCEMENT.md is preserved unchanged.
+
+============================================================
+CUT HERE -- everything below is the Medium post
+============================================================
+
 # Your AI Agent Just Took an Action. Where Is the Receipt?
 
-*Trust infrastructure for the agent economy.*
+*The NSA says MCP deployments need signed verification receipts. Here is the open standard.*
 
-Last week, Anthropic connected Claude to Westlaw, DocuSign, Everlaw, and 20 other legal platforms. Thomson Reuters rebuilt CoCounsel on Claude's agent SDK. Harvey hit an $11 billion valuation. Salesforce made Agentforce the center of its AI strategy. ServiceNow is expanding AI Control Tower.
+On May 20, 2026, the NSA published formal cybersecurity guidance on Model Context Protocol security. Seventeen pages. Nine recommendation areas. The core requirement on page 12: cryptographic signatures directly within JSON payloads, binding verification results to time and context, to prevent tampering, replay, and unintended re-execution.
+
+That is a description of what we already built.
+
+The agent economy is accelerating around this gap. Anthropic connected Claude to Westlaw, DocuSign, Everlaw, and 20 other legal platforms. Thomson Reuters rebuilt CoCounsel on Claude's agent SDK. Harvey hit an $11 billion valuation. Salesforce made Agentforce the center of its AI strategy. ServiceNow is expanding AI Control Tower.
 
 Every major platform is moving toward internal verification, validation, grounding, review, or audit trails.
 
-Here is the question nobody answered last week:
+Here is the question nobody answered:
 
 When the agent acts, where is the receipt?
 
@@ -60,9 +123,7 @@ Nobody has to argue about which approach is better. The receipts speak for thems
 
 A proprietary receipt format is a product. Products compete on features, price, and marketing. An open receipt format is infrastructure. Infrastructure gets adopted.
 
-The SVR specification is published. The JSON schema is published. The Python verifier is live on PyPI. JavaScript and Go
-verifier libraries are in the repository for cross-platform
-verification across standard enterprise stacks. An OpenAPI spec defines the verification API. Everything is MIT licensed.
+The SVR specification is published. The JSON schema is published. The Python verifier is live on PyPI. JavaScript and Go verifier libraries are in the repository for cross-platform verification across standard enterprise stacks. An OpenAPI spec defines the verification API. Everything is MIT licensed.
 
 Any verification engine can issue SVRs. Thomson Reuters could issue them from CoCounsel. Harvey could issue them from their platform. Salesforce could issue them from Agentforce. The specification does not care who built the engine. It cares that the receipt is signed, structured, and verifiable.
 
@@ -94,7 +155,13 @@ Each vertical has its own extension schema with domain-specific fields, remediat
 
 The SATYA engine produces SVR receipts in 18.6 ms. Twelve constraints checked. Five obstruction-producing failures detected. Five proof sketches with Dirichlet energy localization. Five priority-ordered repairs. Zero Purity Gate violations. Valid Ed25519 signature. Valid receipt structure. Verified independently by a standalone tool with zero engine dependencies.
 
-That is not a benchmark on a cluster. That is a laptop.
+One CPU core. No GPU.
+
+## The Regulatory Clock
+
+The NSA's guidance is not the only signal. The Colorado AI Act enforcement deadline is June 30, 2026. The EU AI Act Article 15 accuracy and robustness requirements take effect August 2, 2026. Both demand evidence of systematic verification, not assertions that verification happened.
+
+A signed receipt is that evidence.
 
 ## Try It
 

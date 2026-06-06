@@ -121,6 +121,8 @@ receipt["signature"] = signed.signature.hex()
 receipt["public_key"] = bytes(key.verify_key).hex()
 ```
 
+*Simplified example; the [package implementation](https://github.com/Jasonleonardvolk/svr-verify) is the source of truth for canonical serialization.*
+
 ## Issuing SVRs From Your Own Engine
 
 Any verification engine can issue SVRs. The prefix in the receipt_id is issuer-defined (SATYA-, TR-, HARVEY-, YOUR_ENGINE-). The verifier accepts any prefix. The standard is vendor-neutral.
@@ -129,7 +131,7 @@ Full adoption guide: [PLATFORM_ADOPTION_GUIDE.md](https://github.com/Jasonleonar
 
 ## What Is Next
 
-An append-only transparency log for receipts, modeled on Certificate Transparency: Merkle tree inclusion proofs, signed checkpoints, witness cosigning. The log stores only receipt hashes (content stays private). 87 tests passing on that layer now.
+An append-only transparency log for receipts, modeled on Certificate Transparency and modern Static CT-style logs: Merkle tree inclusion proofs, signed checkpoints, witness cosigning. The log stores only receipt hashes (content stays private). 102 tests passing on that layer now.
 
 ## Links
 

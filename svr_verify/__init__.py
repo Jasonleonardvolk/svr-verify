@@ -54,7 +54,7 @@ def verify(path):
     return verify_file(path)
 
 
-__version__ = "1.0.0"
+__version__ = "1.0.3"
 
 __all__ = [
     "canonical_bytes",
