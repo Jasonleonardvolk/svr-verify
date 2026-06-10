@@ -30,7 +30,7 @@ This is not another AI platform. It is an attempt to make verification portable 
 
 ---
 
-FIRST COMMENT (post immediately after submission):
+FIRST COMMENT
 
 A few implementation details:
 
