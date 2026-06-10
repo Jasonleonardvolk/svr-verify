@@ -1,0 +1,49 @@
+{
+  "svr_version": "1.0",
+  "receipt_id": "SIGMA-20260610-FAILSAMPLE",
+  "receipt_type": "graph_consistency",
+  "mode": "full_verification",
+  "receipt_status": "evaluation",
+  "input_hash": "sha256:b5d8f2e1b4c7a6d9e0f3b5c8a1d4e7f0b2c5a8d1e4f7a0b3c6d9e2f5a8c1d4e7",
+  "source_bundle_hash": "sha256:c6d9e2f5a8c1d4e7f0b3c6d9e2f5a8c1d4e7f0b3c6d9e2f5a8c1d4e7f0b3c6d9",
+  "verdict": "contradicted",
+  "safe_to_rely": false,
+  "filing_safety_status": "UNSAFE_TO_SUBMIT",
+  "reason": "Structural contradictions detected. H^1 cohomology group is nontrivial, indicating global inconsistencies that no local fix can resolve.",
+  "items_checked": 4,
+  "items_passed": 2,
+  "items_failed": 2,
+  "items_excluded": 0,
+  "checked_items": [
+    {
+      "item_id": "sheaf_h1_obstruction",
+      "claim_or_authority": "SIGMA sheaf cohomology engine",
+      "verdict": "contradicted",
+      "reason": "H^1 cohomology group has dimension 2. Two independent global obstructions detected."
+    },
+    {
+      "item_id": "drift_synchronization",
+      "claim_or_authority": "SIGMA lazy-vs-full recomputation check",
+      "verdict": "verified",
+      "reason": "Lazy incremental result matches full recomputation. Measured drift: 0."
+    },
+    {
+      "item_id": "coboundary_norm",
+      "claim_or_authority": "SIGMA coboundary operator",
+      "verdict": "contradicted",
+      "reason": "Coboundary norm exceeds tolerance at edges (Policy, Procurement) and (Audit, Compliance). Dirichlet energy concentrated at these locations."
+    },
+    {
+      "item_id": "cell_count_invariant",
+      "claim_or_authority": "SIGMA cellular decomposition",
+      "verdict": "verified",
+      "reason": "Cell count invariant maintained. 847 cells in final state."
+    }
+  ],
+  "timestamp_utc": "2026-06-10T12:05:00Z",
+  "engine_version": "sigma-0.9.0",
+  "verification_method": "cellular_sheaf_cohomology_h1",
+  "public_key": "unsigned",
+  "signature": "",
+  "signature_status": "UNSIGNED"
+}

@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you reference this work, please cite it as below."
+authors:
+  - family-names: "Volk"
+    given-names: "Jason"
+    email: "jason@invariant.pro"
+title: "SIGMA: Streaming Incremental Sheaf Cohomology for Deterministic Graph-State Verification"
+version: 1.0.3
+date-released: 2026-06-10
+url: "https://invariant.pro"
+repository-code: "https://github.com/Jasonleonardvolk/svr-verify"
+identifiers:
+  - type: other
+    value: "arXiv:2606.04227"
+    description: "arXiv preprint"
+keywords:
+  - sheaf cohomology
+  - signed verification receipts
+  - graph-state verification
+  - deterministic verification
+  - AI agent audit
+  - knowledge graph consistency
+  - cellular decomposition
+  - structural contradiction detection
+  - Ed25519 cryptographic receipts
+license: MIT
