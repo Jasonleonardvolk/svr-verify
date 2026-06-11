@@ -1,0 +1,37 @@
+{
+  "svr_version": "1.0",
+  "receipt_id": "SIGMA-20260611-5A7AB412",
+  "receipt_type": "agent",
+  "mode": "full_verification",
+  "receipt_status": "evaluation",
+  "input_hash": "5a7ab412b6a6e800",
+  "source_bundle_hash": "5a7ab412b6a6e800",
+  "verdict": "verified",
+  "safe_to_rely": true,
+  "filing_safety_status": "SAFE_TO_SUBMIT",
+  "reason": "All claims in the MCP response are internally consistent. No structural contradictions detected.",
+  "items_checked": 2,
+  "items_passed": 2,
+  "items_failed": 0,
+  "items_excluded": 0,
+  "checked_items": [
+    {
+      "item_id": 1,
+      "claim_or_authority": "MCP response claim consistency: billing, vendor, compliance",
+      "verdict": "PASS",
+      "reason": "All three claims are mutually consistent under the graph model."
+    },
+    {
+      "item_id": 2,
+      "claim_or_authority": "Response hash binding",
+      "verdict": "PASS",
+      "reason": "Response content hash matches input_hash in receipt."
+    }
+  ],
+  "timestamp_utc": "2026-06-11T00:00:00Z",
+  "engine_version": "sigma-0.9.0",
+  "verification_method": "deterministic_algebraic",
+  "public_key": "unsigned",
+  "signature": "",
+  "signature_status": "UNSIGNED"
+}

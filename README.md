@@ -194,6 +194,17 @@ Receipt-based routing (memoizing repeated deterministic checks with fail-closed 
 
 ---
 
+## MCP / CoSAI WS4 alignment
+
+SVR is designed as a receipt-backed verification pattern for AI and MCP trust boundaries. The repo includes an independent implementation note mapping SVR to MCP T9-style response verification, and a conformance capsule with test vectors any MCP host, gateway, or reviewer can run:
+
+- [Receipt-Backed T9 Verification for MCP Responses](docs/cosai-ws4-mcp-t9-receipt-backed-verification.md)
+- [Conformance capsule](examples/mcp-t9-conformance-capsule/) (responses, receipts, expected host behavior, PowerShell runner)
+
+This is not an official CoSAI/OASIS document. It is intended to make the receipt pattern concrete and reviewable.
+
+---
+
 ## Why AI systems need deterministic receipts
 
 Production AI agents mutate memory, plans, claims, tool outputs, and execution state. When something goes wrong, the current answer is usually "ask another LLM whether the first one was right." That is probabilistic checking of probabilistic output.

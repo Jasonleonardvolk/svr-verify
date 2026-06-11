@@ -1,0 +1,37 @@
+{
+  "svr_version": "1.0",
+  "receipt_id": "SIGMA-20260611-5A7AB412",
+  "receipt_type": "agent",
+  "mode": "full_verification",
+  "receipt_status": "evaluation",
+  "input_hash": "5a7ab412b6a6e800",
+  "source_bundle_hash": "5a7ab412b6a6e800",
+  "verdict": "verified",
+  "safe_to_rely": true,
+  "filing_safety_status": "SAFE_TO_SUBMIT",
+  "reason": "All claims in the MCP response are internally consistent.",
+  "items_checked": 2,
+  "items_passed": 2,
+  "items_failed": 0,
+  "items_excluded": 0,
+  "checked_items": [
+    {
+      "item_id": 1,
+      "claim_or_authority": "MCP response claim consistency",
+      "verdict": "PASS",
+      "reason": "Claims are mutually consistent."
+    },
+    {
+      "item_id": 2,
+      "claim_or_authority": "Response hash binding",
+      "verdict": "PASS",
+      "reason": "Response content hash matches."
+    }
+  ],
+  "timestamp_utc": "2026-06-11T00:00:00Z",
+  "engine_version": "sigma-0.9.0",
+  "verification_method": "deterministic_algebraic",
+  "public_key": "a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2",
+  "signature": "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+  "signature_status": "VALID"
+}

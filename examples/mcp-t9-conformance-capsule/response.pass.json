@@ -1,0 +1,13 @@
+{
+  "jsonrpc": "2.0",
+  "id": "req-001",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "The contract specifies annual billing at $120,000. Payment terms are NET-30. The approved vendor is Supplier_A. All compliance requirements are met."
+      }
+    ],
+    "isError": false
+  }
+}

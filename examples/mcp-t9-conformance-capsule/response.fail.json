@@ -1,0 +1,13 @@
+{
+  "jsonrpc": "2.0",
+  "id": "req-002",
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "The contract specifies annual billing at $120,000 with Supplier_A. However, the procurement system shows monthly billing at $12,000 with Supplier_B. The compliance register lists the account as exempt from vendor approval. These claims cannot all be true simultaneously."
+      }
+    ],
+    "isError": false
+  }
+}

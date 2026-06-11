@@ -1,0 +1,31 @@
+{
+  "svr_version": "1.0",
+  "receipt_id": "SIGMA-20260611-FFFFFFFF",
+  "receipt_type": "agent",
+  "mode": "full_verification",
+  "receipt_status": "evaluation",
+  "input_hash": "ffffffffffffffff",
+  "source_bundle_hash": "ffffffffffffffff",
+  "verdict": "verified",
+  "safe_to_rely": true,
+  "filing_safety_status": "SAFE_TO_SUBMIT",
+  "reason": "All claims consistent.",
+  "items_checked": 1,
+  "items_passed": 1,
+  "items_failed": 0,
+  "items_excluded": 0,
+  "checked_items": [
+    {
+      "item_id": 1,
+      "claim_or_authority": "Claim consistency",
+      "verdict": "PASS",
+      "reason": "Consistent."
+    }
+  ],
+  "timestamp_utc": "2026-06-11T00:00:00Z",
+  "engine_version": "sigma-0.9.0",
+  "verification_method": "deterministic_algebraic",
+  "public_key": "unsigned",
+  "signature": "",
+  "signature_status": "UNSIGNED"
+}

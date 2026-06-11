@@ -1,0 +1,44 @@
+{
+  "trace_type": "mcp_t9_trust_boundary_trace",
+  "boundary": "mcp_response_to_downstream_reliance",
+  "steps": [
+    {
+      "step": 1,
+      "name": "mcp_response_produced",
+      "artifact": "response.fail.json"
+    },
+    {
+      "step": 2,
+      "name": "response_hash_bound",
+      "hash_alg": "sha256",
+      "hash_truncation": "16_hex_chars"
+    },
+    {
+      "step": 3,
+      "name": "verification_gate_evaluated",
+      "gate": "receipt_backed_t9_verification"
+    },
+    {
+      "step": 4,
+      "name": "receipt_emitted",
+      "artifact": "receipt.fail.svr.json",
+      "media_type": "application/vnd.svr.receipt+json"
+    },
+    {
+      "step": 5,
+      "name": "receipt_verified_by_relying_party",
+      "checks": [
+        "signature",
+        "response_hash",
+        "verdict",
+        "verifier_key",
+        "policy_version"
+      ]
+    },
+    {
+      "step": 6,
+      "name": "host_action_selected",
+      "action": "quarantine_reject_or_escalate"
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "svr_version": "1.0",
+  "receipt_id": "SIGMA-20260611-5A089C96",
+  "receipt_type": "agent",
+  "mode": "full_verification",
+  "receipt_status": "evaluation",
+  "input_hash": "5a089c9639a7c638",
+  "source_bundle_hash": "5a089c9639a7c638",
+  "verdict": "unsafe_to_submit",
+  "safe_to_rely": false,
+  "filing_safety_status": "UNSAFE_TO_SUBMIT",
+  "reason": "Structural contradictions detected. The billing amount, vendor identity, and approval status cannot all be true simultaneously.",
+  "items_checked": 3,
+  "items_passed": 1,
+  "items_failed": 2,
+  "items_excluded": 0,
+  "checked_items": [
+    {
+      "item_id": 1,
+      "claim_or_authority": "Billing consistency: contract vs procurement",
+      "verdict": "CONTRADICTED",
+      "reason": "Contract states annual $120,000 with Supplier_A; procurement shows monthly $12,000 with Supplier_B."
+    },
+    {
+      "item_id": 2,
+      "claim_or_authority": "Vendor approval: compliance register vs contract",
+      "verdict": "CONTRADICTED",
+      "reason": "Compliance register lists account as exempt from vendor approval, but contract names a specific approved vendor."
+    },
+    {
+      "item_id": 3,
+      "claim_or_authority": "Response hash binding",
+      "verdict": "PASS",
+      "reason": "Response content hash matches input_hash in receipt."
+    }
+  ],
+  "timestamp_utc": "2026-06-11T00:01:00Z",
+  "engine_version": "sigma-0.9.0",
+  "verification_method": "deterministic_algebraic",
+  "public_key": "unsigned",
+  "signature": "",
+  "signature_status": "UNSIGNED"
+}
