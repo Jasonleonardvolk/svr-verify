@@ -59,11 +59,13 @@ def verify_graph(vertices, edges):
     has_contradictions = len(disagreements) > 0
 
     checked_items = []
+    item_counter = 0
     for src, tgt, field, energy in disagreements:
+        item_counter += 1
         checked_items.append({
-            "item_id": "edge_%s_%s_%s" % (src, tgt, field),
-            "claim_or_authority": "coboundary operator",
-            "verdict": "contradicted",
+            "item_id": item_counter,
+            "claim_or_authority": "coboundary operator: %s <-> %s on '%s'" % (src, tgt, field),
+            "verdict": "CONTRADICTED",
             "reason": (
                 "'%s' and '%s' disagree on '%s'. "
                 "Dirichlet energy: %.4f."
@@ -73,15 +75,16 @@ def verify_graph(vertices, edges):
 
     # Add a global consistency item
     if not has_contradictions:
+        item_counter += 1
         checked_items.append({
-            "item_id": "global_consistency",
+            "item_id": item_counter,
             "claim_or_authority": "sheaf cohomology H^1",
-            "verdict": "verified",
+            "verdict": "PASS",
             "reason": "H^1 is trivial. All local claims glue to a consistent global section.",
         })
 
-    items_passed = sum(1 for it in checked_items if it["verdict"] == "verified")
-    items_failed = sum(1 for it in checked_items if it["verdict"] != "verified")
+    items_passed = sum(1 for it in checked_items if it["verdict"] == "PASS")
+    items_failed = sum(1 for it in checked_items if it["verdict"] != "PASS")
 
     graph_hash = hashlib.sha256(
         json.dumps(
@@ -92,13 +95,13 @@ def verify_graph(vertices, edges):
 
     receipt = {
         "svr_version": "1.0",
-        "receipt_id": "SIGMA-DEMO-%s" % graph_hash[:8].upper(),
-        "receipt_type": "graph_consistency",
+        "receipt_id": "SIGMA-20260610-%s" % graph_hash[:8].upper(),
+        "receipt_type": "agent",
         "mode": "full_verification",
         "receipt_status": "evaluation",
-        "input_hash": "sha256:%s" % graph_hash,
-        "source_bundle_hash": "sha256:%s" % graph_hash,
-        "verdict": "contradicted" if has_contradictions else "consistent",
+        "input_hash": graph_hash[:16],
+        "source_bundle_hash": graph_hash[:16],
+        "verdict": "unsafe_to_submit" if has_contradictions else "verified",
         "safe_to_rely": not has_contradictions,
         "filing_safety_status": "UNSAFE_TO_SUBMIT" if has_contradictions else "SAFE_TO_SUBMIT",
         "reason": (
@@ -114,7 +117,7 @@ def verify_graph(vertices, edges):
         "checked_items": checked_items,
         "timestamp_utc": "2026-06-10T12:00:00Z",
         "engine_version": "sigma-demo-0.1.0",
-        "verification_method": "cellular_sheaf_cohomology_h1",
+        "verification_method": "deterministic_algebraic",
         "public_key": "unsigned",
         "signature": "",
         "signature_status": "UNSIGNED",

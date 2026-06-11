@@ -1,12 +1,12 @@
 {
   "svr_version": "1.0",
-  "receipt_id": "SIGMA-20260610-BENCH5M",
-  "receipt_type": "graph_consistency",
+  "receipt_id": "SIGMA-20260610-A3C9E7B2",
+  "receipt_type": "agent",
   "mode": "full_verification",
   "receipt_status": "evaluation",
-  "input_hash": "sha256:a3c9e7b201f84d6e9b0c3a5d8f2e1b4c7a6d9e0f3b5c8a1d4e7f0b2c5a8d1e4f",
-  "source_bundle_hash": "sha256:d4e7f0b2c5a8d1e4f7a0b3c6d9e2f5a8c1d4e7f0b3c6d9e2f5a8c1d4e7f0b3c6",
-  "verdict": "consistent",
+  "input_hash": "a3c9e7b201f84d6e",
+  "source_bundle_hash": "d4e7f0b2c5a8d1e4",
+  "verdict": "verified",
   "safe_to_rely": true,
   "filing_safety_status": "SAFE_TO_SUBMIT",
   "reason": "All graph consistency checks passed. Zero structural contradictions detected across 5M-vertex benchmark graph.",
@@ -16,33 +16,38 @@
   "items_excluded": 0,
   "checked_items": [
     {
-      "item_id": "sheaf_h1_obstruction",
-      "claim_or_authority": "SIGMA sheaf cohomology engine",
-      "verdict": "verified",
+      "item_id": 1,
+      "claim_or_authority": "SIGMA sheaf cohomology engine: H^1 obstruction check",
+      "verdict": "PASS",
       "reason": "H^1 cohomology group is trivial. No global obstructions detected."
     },
     {
-      "item_id": "drift_synchronization",
+      "item_id": 2,
       "claim_or_authority": "SIGMA lazy-vs-full recomputation check",
-      "verdict": "verified",
+      "verdict": "PASS",
       "reason": "Lazy incremental result matches full recomputation. Measured drift: 0."
     },
     {
-      "item_id": "coboundary_norm",
+      "item_id": 3,
       "claim_or_authority": "SIGMA coboundary operator",
-      "verdict": "verified",
+      "verdict": "PASS",
       "reason": "Coboundary norm within tolerance. No restriction map violations."
     },
     {
-      "item_id": "cell_count_invariant",
+      "item_id": 4,
       "claim_or_authority": "SIGMA cellular decomposition",
-      "verdict": "verified",
+      "verdict": "PASS",
       "reason": "Cell count invariant maintained across all 15M streaming edits. 25,473 cells in final state."
     }
   ],
+  "sheaf_metrics": {
+    "h1_dimension": 0,
+    "obstruction_count": 0,
+    "cells_total": 25473
+  },
   "timestamp_utc": "2026-06-10T12:00:00Z",
   "engine_version": "sigma-0.9.0",
-  "verification_method": "cellular_sheaf_cohomology_h1",
+  "verification_method": "deterministic_algebraic",
   "public_key": "unsigned",
   "signature": "",
   "signature_status": "UNSIGNED"

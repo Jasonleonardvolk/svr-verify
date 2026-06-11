@@ -17,12 +17,12 @@ Deterministic verification receipts for AI systems: CPU-only, Ed25519-signed, re
 ```json
 {
   "svr_version": "1.0",
-  "receipt_id": "SIGMA-20260610-BENCH5M",
-  "receipt_type": "graph_consistency",
+  "receipt_id": "SIGMA-20260610-A3C9E7B2",
+  "receipt_type": "agent",
   "mode": "full_verification",
-  "input_hash": "sha256:a3c9e7b2...",
-  "source_bundle_hash": "sha256:d4e7f0b2...",
-  "verdict": "consistent",
+  "input_hash": "a3c9e7b201f84d6e",
+  "source_bundle_hash": "d4e7f0b2c5a8d1e4",
+  "verdict": "verified",
   "safe_to_rely": true,
   "items_checked": 4,
   "items_passed": 4,
@@ -30,7 +30,7 @@ Deterministic verification receipts for AI systems: CPU-only, Ed25519-signed, re
   "items_excluded": 0,
   "timestamp_utc": "2026-06-10T12:00:00Z",
   "engine_version": "sigma-0.9.0",
-  "verification_method": "cellular_sheaf_cohomology_h1",
+  "verification_method": "deterministic_algebraic",
   "public_key": "ed25519 hex",
   "signature": "ed25519 hex"
 }
@@ -69,10 +69,10 @@ Signed receipt written to: examples\receipts\sample_pass.signed.svr.json
 SVR Verification Report
 ============================================================
 
-  Receipt ID:      SIGMA-20260610-BENCH5M
+  Receipt ID:      SIGMA-20260610-A3C9E7B2
   SVR Version:     1.0
-  Receipt Type:    graph_consistency
-  Verdict:         consistent
+  Receipt Type:    agent
+  Verdict:         verified
   Items Checked:   4
   Items Passed:    4
   Items Failed:    0
@@ -266,7 +266,7 @@ For the full theoretical treatment, see [arXiv:2606.04227](https://arxiv.org/abs
 - [Agent State Verification](docs/AGENT_STATE_VERIFICATION.md)
 - [NSA MCP Security Alignment](docs/NSA_MCP_SECURITY_ALIGNMENT.md)
 - [IANA Registration](docs/IANA_REGISTRATION.txt)
-- [JSON Schema](https://github.com/Jasonleonardvolk/sigma/blob/main/satya/spec/svr_schema_v1.json)
+- [JSON Schema](schemas/svr_schema_v1.json) (canonical copy: [sigma repo](https://github.com/Jasonleonardvolk/sigma/blob/main/satya/spec/svr_schema_v1.json))
 
 Implementations: [Python](svr_verify/) | [JavaScript](js/) | [Go](go/)
 

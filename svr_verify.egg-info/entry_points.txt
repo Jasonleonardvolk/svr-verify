@@ -1,2 +1,0 @@
-[console_scripts]
-svr-verify = svr_verify.cli:main

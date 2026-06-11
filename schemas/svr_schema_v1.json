@@ -1,0 +1,326 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://invariant.pro/schemas/svr/1.0/receipt.json",
+  "title": "Signed Verification Receipt (SVR) v1.0",
+  "description": "Cryptographically signed, point-in-time verification attestation. Vendor-neutral open standard. Any compliant engine may issue SVRs.",
+  "type": "object",
+  "required": [
+    "svr_version",
+    "receipt_id",
+    "receipt_type",
+    "mode",
+    "receipt_status",
+    "input_hash",
+    "source_bundle_hash",
+    "verdict",
+    "safe_to_rely",
+    "filing_safety_status",
+    "reason",
+    "items_checked",
+    "items_passed",
+    "items_failed",
+    "items_excluded",
+    "checked_items",
+    "timestamp_utc",
+    "engine_version",
+    "public_key",
+    "signature",
+    "signature_status",
+    "verification_method"
+  ],
+  "properties": {
+    "svr_version": {
+      "type": "string",
+      "const": "1.0",
+      "description": "Schema version. '1.0' for this specification."
+    },
+    "receipt_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9]+-[0-9]{8}-[A-Fa-f0-9]{8}$",
+      "description": "Globally unique identifier. Format: PREFIX-YYYYMMDD-HASH8. PREFIX is issuer-defined."
+    },
+    "receipt_type": {
+      "type": "string",
+      "enum": [
+        "legal",
+        "soc2",
+        "compliance",
+        "clinical",
+        "financial",
+        "defense",
+        "rag",
+        "agent",
+        "faithfulness"
+      ],
+      "description": "Domain adapter label."
+    },
+    "mode": {
+      "type": "string",
+      "description": "Engine mode used for this audit."
+    },
+    "receipt_status": {
+      "type": "string",
+      "enum": ["evaluation", "production"],
+      "description": "Monetization tier."
+    },
+    "input_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{16}$",
+      "description": "SHA-256 of raw input text, truncated to 16 hex characters."
+    },
+    "input_byte_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Length in bytes of the raw input."
+    },
+    "source_bundle_hash": {
+      "type": "string",
+      "description": "SHA-256 of concatenated source documents, truncated to 16 hex. Empty string if no sources."
+    },
+    "source_hashes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["source_id", "hash"],
+        "properties": {
+          "source_id": { "type": "string" },
+          "hash": { "type": "string" },
+          "provider": { "type": "string" },
+          "url": { "type": "string", "format": "uri" }
+        }
+      }
+    },
+    "graph_hash": {
+      "type": "string",
+      "description": "SHA-256 of the serialized sheaf complex at audit time."
+    },
+    "decomposition_hash": {
+      "type": "string",
+      "description": "SHA-256 of the cohomology decomposition output."
+    },
+    "sheaf_metrics": {
+      "type": "object",
+      "properties": {
+        "h1_dimension": { "type": "integer", "minimum": 0 },
+        "obstruction_count": { "type": "integer", "minimum": 0 },
+        "cokernel_dimension": { "type": "integer", "minimum": 0 },
+        "grounding_ratio": { "type": "number", "minimum": 0.0, "maximum": 1.0 },
+        "evidence_edges": { "type": "integer", "minimum": 0 },
+        "claims_extracted": { "type": "integer", "minimum": 0 },
+        "cells_total": { "type": "integer", "minimum": 0 },
+        "restriction_maps": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "verdict": {
+      "type": "string",
+      "enum": [
+        "verified",
+        "citation_audit_high_risk",
+        "review_required",
+        "unsafe_to_submit",
+        "insufficient_data"
+      ],
+      "description": "Machine-readable overall verdict."
+    },
+    "safe_to_rely": {
+      "type": ["boolean", "null"],
+      "description": "Whether the input is safe to rely on. null if indeterminate."
+    },
+    "filing_safety_status": {
+      "type": "string",
+      "enum": ["SAFE_TO_SUBMIT", "UNSAFE_TO_SUBMIT", "REVIEW_REQUIRED"]
+    },
+    "reason": {
+      "type": "string",
+      "description": "Plain English explanation of the verdict."
+    },
+    "items_checked": { "type": "integer", "minimum": 0 },
+    "items_passed": { "type": "integer", "minimum": 0 },
+    "items_failed": { "type": "integer", "minimum": 0 },
+    "items_excluded": { "type": "integer", "minimum": 0 },
+    "checked_items": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/checked_item"
+      }
+    },
+    "exclusions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "sources_searched": { "type": "integer", "minimum": 0 },
+    "sources_relevant": { "type": "integer", "minimum": 0 },
+    "source_providers": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "timestamp_utc": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp with timezone."
+    },
+    "engine_version": {
+      "type": "string",
+      "description": "SATYA and SIGMA engine versions."
+    },
+    "policy_profile": {
+      "type": ["string", "null"],
+      "description": "Domain policy applied during audit."
+    },
+    "verification_modules": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "replay_seed": {
+      "type": "string",
+      "description": "Deterministic replay seed for reproducibility."
+    },
+    "drift": {
+      "type": "object",
+      "properties": {
+        "drift_value": { "type": "number" },
+        "dirty_cells": { "type": "integer", "minimum": 0 },
+        "last_edit_latency_us": { "type": "number" }
+      }
+    },
+    "supersedes": {
+      "type": ["string", "null"],
+      "description": "receipt_id of the prior receipt this one supersedes."
+    },
+    "supersession_reason": {
+      "type": ["string", "null"],
+      "enum": [
+        "restriction_map_updated",
+        "source_document_updated",
+        "policy_profile_changed",
+        "engine_version_upgraded",
+        "manual_reaudit",
+        "input_amended",
+        null
+      ]
+    },
+    "changed_edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["edge_id", "old_restriction_hash", "new_restriction_hash"],
+        "properties": {
+          "edge_id": { "type": "string" },
+          "old_restriction_hash": { "type": "string" },
+          "new_restriction_hash": { "type": "string" },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "superseded_by": {
+      "type": ["string", "null"],
+      "description": "Populated by query API only, never at issuance."
+    },
+    "public_key": {
+      "type": "string",
+      "description": "Ed25519 public key in hex, or 'unsigned'."
+    },
+    "signature": {
+      "type": "string",
+      "description": "Ed25519 signature in hex over canonical serialization."
+    },
+    "signature_status": {
+      "type": "string",
+      "enum": ["VALID", "UNSIGNED"]
+    },
+    "verify_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "latency_ms": { "type": "number", "minimum": 0 },
+    "retrieval_ms": { "type": "number", "minimum": 0 },
+    "compute_ms": { "type": "number", "minimum": 0 },
+    "verification_method": {
+      "type": "string",
+      "enum": [
+        "deterministic_algebraic",
+        "deterministic_rule_based",
+        "probabilistic_llm",
+        "probabilistic_statistical",
+        "human_review",
+        "unspecified"
+      ],
+      "description": "How the verification was performed. No hybrid category. If a probabilistic component exists anywhere in the verification path, the method is probabilistic."
+    },
+    "verification_parameters": {
+      "type": "object",
+      "properties": {
+        "ml_models_used": { "type": "integer", "minimum": 0 },
+        "gpu_required": { "type": "boolean" },
+        "training_data_required": { "type": "boolean" },
+        "deterministic_replay": { "type": "boolean" },
+        "parameter_count": { "type": "integer", "minimum": 0 }
+      },
+      "description": "Structured metadata about the verification loop."
+    }
+  },
+  "definitions": {
+    "checked_item": {
+      "type": "object",
+      "required": ["item_id", "claim_or_authority", "verdict", "reason"],
+      "properties": {
+        "item_id": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "claim_or_authority": {
+          "type": "string"
+        },
+        "verdict": {
+          "type": "string",
+          "description": "Per-item result. Values depend on domain and receipt_type.",
+          "enum": [
+            "PASS",
+            "FAIL",
+            "INSUFFICIENT_EVIDENCE",
+            "AMBIGUOUS_WITH_BOUNDS",
+            "SUPPORTED",
+            "UNSUPPORTED",
+            "CONTRADICTED",
+            "CITATION_VERIFIED",
+            "CITATION_MISMATCH",
+            "SOURCE_NOT_FOUND",
+            "OUT_OF_SCOPE",
+            "NEEDS_HUMAN_REVIEW",
+            "citation_identity_mismatch",
+            "supports_candidate",
+            "partial",
+            "low_lexical_support",
+            "support_not_tested",
+            "contradicted",
+            "quote_mismatch",
+            "quote_not_found",
+            "quote_pinpoint_mismatch",
+            "insufficient_source_text"
+          ]
+        },
+        "reason": {
+          "type": "string"
+        },
+        "source_checked": {
+          "type": ["string", "null"]
+        },
+        "source_url": {
+          "type": ["string", "null"],
+          "format": "uri"
+        },
+        "missing_evidence": {
+          "type": ["array", "null"],
+          "items": { "type": "string" }
+        },
+        "remediation": {
+          "type": ["string", "null"]
+        },
+        "detail": {
+          "type": ["object", "null"]
+        }
+      }
+    }
+  },
+  "additionalProperties": true
+}

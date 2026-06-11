@@ -26,12 +26,12 @@ Every SVR must include the following 22 top-level fields:
 |---|---|---|
 | svr_version | string | Specification version (currently "1.0") |
 | receipt_id | string | Unique identifier, format: PREFIX-YYYYMMDD-HASH8 |
-| receipt_type | string | Category of verification (e.g. "compliance", "graph_consistency") |
+| receipt_type | string | Domain adapter label (e.g. "compliance", "agent", "rag") |
 | mode | string | Verification mode (e.g. "full_verification", "incremental") |
 | receipt_status | string | "evaluation" or "production" |
 | input_hash | string | SHA-256 hash of the input that was verified |
 | source_bundle_hash | string | SHA-256 hash of the source/reference bundle |
-| verdict | string | Overall result (e.g. "verified", "contradicted", "consistent") |
+| verdict | string | Overall result (e.g. "verified", "unsafe_to_submit", "review_required") |
 | safe_to_rely | boolean | Whether the result is safe for downstream use |
 | filing_safety_status | string | "SAFE_TO_SUBMIT", "UNSAFE_TO_SUBMIT", or "REVIEW_REQUIRED" |
 | reason | string | Human-readable explanation of the verdict |
@@ -45,7 +45,7 @@ Every SVR must include the following 22 top-level fields:
 | public_key | string | Ed25519 public key (hex) or "unsigned" |
 | signature | string | Ed25519 signature (hex) or empty string |
 | signature_status | string | "VALID" or "UNSIGNED" |
-| verification_method | string | Algorithm used (e.g. "cellular_sheaf_cohomology_h1") |
+| verification_method | string | How verification was performed (e.g. "deterministic_algebraic") |
 
 ### 3.1 Count invariant
 
@@ -97,6 +97,8 @@ If both the signature and structure are valid, the receipt is VALID.
 ## 5. IANA registration
 
 The media type `application/vnd.svr.receipt+json` is registered with IANA for SVR documents.
+
+The machine-readable JSON Schema is published at [../schemas/svr_schema_v1.json](../schemas/svr_schema_v1.json).
 
 ## 6. Reference implementation
 
