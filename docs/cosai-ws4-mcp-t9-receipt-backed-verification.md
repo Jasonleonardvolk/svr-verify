@@ -6,6 +6,10 @@ A mechanism-neutral implementation note for MCP trust-boundary verification, wit
 
 This note is independent research from Invariant Research. It is not an official CoSAI, OASIS, MCP, or WS4 document. It is intended as a mechanism-neutral contribution to the discussion around MCP trust-boundary verification. SVR is presented as one concrete receipt profile, not as the exclusive implementation of the T9 principle.
 
+## Vendor-neutral bright line
+
+SVR is the receipt format. SIGMA is one producer/verifier implementation. Any conforming verifier can evaluate a valid SVR receipt. The receipt-backed T9 pattern is vendor-neutral. Neither SIGMA nor Invariant Research is required for the pattern itself.
+
 ## Problem
 
 MCP responses cross trust boundaries. A model or tool produces an output; a downstream system, agent, or user relies on it. Between production and reliance, there is often no structured evidence that the output was checked, authorized, consistent, or safe to use.
@@ -23,6 +27,14 @@ Several recent documents identify this gap:
 **NSA Artificial Intelligence Security Center**. The May 2026 Cybersecurity Information Sheet on MCP warns that adoption has outpaced security safeguards and identifies risks including uncontrolled automated actions and insufficient screening of data passing between systems. The guidance says organizations should clearly define trust boundaries between MCP components.
 
 **IANA media type registry**. The media type `application/vnd.svr.receipt+json` is registered with IANA for Signed Verification Receipts (contact: Jason_Volk, Invariant Research). This gives the receipt profile an external standards anchor independent of any single platform or vendor.
+
+## CoSAI MCP threat-taxonomy mapping
+
+| CoSAI MCP category | Concern | Receipt-backed interpretation |
+|---|---|---|
+| MCP-T6: Missing Integrity/Verification Controls | The MCP response or resource lacks a reliable verification artifact. | Bind the response hash, verifier identity, policy version, verdict, and signature into an SVR receipt. |
+| MCP-T9: Trust Boundary and Privilege Design Failures | A downstream system relies on an output crossing a trust boundary without enough evidence. | Evaluate the receipt at the response boundary before the host allows, rejects, quarantines, or escalates the output. |
+| MCP-T12: Insufficient Logging, Monitoring, and Auditability | The system cannot later prove what happened, what was checked, or why the host acted. | Store the receipt or receipt hash as an audit object tied to the host action. |
 
 ## Proposed pattern: receipt-backed T9 verification
 
@@ -58,6 +70,26 @@ MCP tool/model output
     v
 [Audit log: receipt or receipt hash]
 ```
+
+## Host action model
+
+A relying host SHOULD NOT treat receipt verification as only a binary allow/reject decision.
+
+| Action | Meaning | Typical use |
+|---|---|---|
+| allow | Receipt is valid, verdict permits downstream reliance, and local policy accepts the verifier. | Low-risk or verified workflow continuation. |
+| quarantine | Receipt is valid but the verdict, policy, evidence, verifier trust, or risk level requires review. | Human review queue, SOC queue, compliance review, legal review, agent supervisor queue. |
+| reject | Receipt is invalid, missing required bindings, signed by an untrusted key, or contradicts local policy. | Block output or prevent tool result from being consumed downstream. |
+| audit_only | Receipt is stored for traceability, but no enforcement action is taken. | Low-risk monitoring, migration mode, brownfield deployments. |
+| reverify | Host asks another verifier or newer policy version to evaluate the response. | Stale policy, unknown verifier, high-value action, conflicting receipts. |
+
+## Why quarantine matters
+
+Quarantine is the preferred default for many enterprise MCP deployments because it avoids two bad extremes: blindly allowing unverified or contradicted agent output, and automatically blocking business workflows that may require human judgment.
+
+A receipt-backed quarantine state gives the reviewer a compact evidence packet: the response, the receipt, the verdict, the evidence references, the obstruction or failure reason, the verifier identity, and the signature status. The conformance capsule includes a `quarantine-record.example.json` showing the shape of a quarantine record.
+
+This is where receipt-backed verification becomes operationally useful. It is not just "we cryptographically signed a JSON file." It is "we created the artifact that lets a host route uncertain AI output to the correct review queue with compact, structured evidence."
 
 ## SVR profile
 

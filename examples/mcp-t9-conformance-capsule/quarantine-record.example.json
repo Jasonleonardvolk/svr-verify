@@ -1,0 +1,19 @@
+{
+  "record_type": "mcp_t9_quarantine_record",
+  "response_id": "req-002",
+  "receipt_id": "SIGMA-20260611-5A089C96",
+  "receipt_media_type": "application/vnd.svr.receipt+json",
+  "receipt_verdict": "unsafe_to_submit",
+  "host_action": "QUARANTINE",
+  "quarantine_reason": "valid_receipt_with_structural_contradictions",
+  "review_queue": "human_security_review",
+  "review_recommendation": "Inspect evidence references and obstruction summary before allowing downstream reliance. Two of three claims in the MCP response contradict each other: billing amount (contract vs procurement) and vendor approval status (compliance register vs contract).",
+  "evidence_packet": {
+    "response": "response.fail.json",
+    "receipt": "receipt.fail.svr.json",
+    "items_failed": 2,
+    "items_passed": 1,
+    "obstruction_summary": "H^1 nontrivial: billing and vendor claims cannot be simultaneously true"
+  },
+  "created_at": "2026-06-11T00:01:30Z"
+}

@@ -13,27 +13,23 @@ Write-Host ""
 $Cases = @(
     @{
         Name     = "pass_valid"
-        Response = "response.pass.json"
         Receipt  = "receipt.pass.svr.json"
-        Expect   = "Structure valid, verdict PASS"
+        Expect   = "Structure valid, verdict PASS -> host action: ALLOW"
     },
     @{
-        Name     = "fail_valid"
-        Response = "response.fail.json"
+        Name     = "fail_valid_quarantine"
         Receipt  = "receipt.fail.svr.json"
-        Expect   = "Structure valid, verdict FAIL"
+        Expect   = "Structure valid, verdict FAIL -> host action: QUARANTINE"
     },
     @{
         Name     = "invalid_signature"
-        Response = "response.pass.json"
         Receipt  = "receipt.invalid-signature.svr.json"
-        Expect   = "Signature INVALID, host should reject"
+        Expect   = "Signature INVALID -> host action: REJECT"
     },
     @{
         Name     = "wrong_response_hash"
-        Response = "response.pass.json"
         Receipt  = "receipt.wrong-response-hash.svr.json"
-        Expect   = "Response hash mismatch, host should reject"
+        Expect   = "Response hash mismatch -> host action: REJECT"
     }
 )
 
@@ -54,4 +50,5 @@ foreach ($Case in $Cases) {
 
 Write-Host "============================================================"
 Write-Host "See expected-behavior.json for the full conformance matrix."
+Write-Host "See quarantine-record.example.json for the quarantine record shape."
 Write-Host "============================================================"
