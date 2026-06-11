@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "svr-verify"
-version = "1.0.3"
+version = "1.0.4"
 description = "Standalone verifier for Signed Verification Receipts (SVR). No engine dependency required."
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.8"
 authors = [
-    {name = "Invariant Research"},
+    {name = "Jason Volk", email = "jason@invariant.pro"},
 ]
 keywords = [
     "verification",
@@ -20,10 +20,17 @@ keywords = [
     "audit",
     "compliance",
     "svr",
+    "signed-verification-receipt",
+    "ai",
+    "agents",
+    "mcp",
+    "provenance",
+    "deterministic",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
@@ -32,9 +39,15 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Topic :: Security :: Cryptography",
     "Topic :: Software Development :: Libraries",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
 ]
 dependencies = [
     "pynacl>=1.5.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0",
 ]
 
 [project.scripts]
@@ -45,6 +58,8 @@ Homepage = "https://invariant.pro"
 Repository = "https://github.com/Jasonleonardvolk/svr-verify"
 Specification = "https://github.com/Jasonleonardvolk/sigma/blob/main/satya/spec/SVR_SPEC_v1.txt"
 Schema = "https://github.com/Jasonleonardvolk/sigma/blob/main/satya/spec/svr_schema_v1.json"
+"Routing Demo" = "https://github.com/Jasonleonardvolk/svr-verify/blob/main/ROUTING_DEMO.md"
+"arXiv Paper" = "https://arxiv.org/abs/2606.04227"
 
 [tool.setuptools.packages.find]
 include = ["svr_verify*"]

@@ -1,5 +1,9 @@
 # svr-verify
 
+[![PyPI](https://img.shields.io/pypi/v/svr-verify.svg)](https://pypi.org/project/svr-verify/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/pypi/pyversions/svr-verify.svg)](https://pypi.org/project/svr-verify/)
+
 Standalone verifier for **Signed Verification Receipts (SVR)**.
 
 Deterministic verification receipts for AI systems: CPU-only, Ed25519-signed, reproducible, and independently verifiable. No SATYA engine required. No SIGMA dependency. Just the receipt and the public key.
@@ -15,18 +19,24 @@ Deterministic verification receipts for AI systems: CPU-only, Ed25519-signed, re
   "svr_version": "1.0",
   "receipt_id": "SIGMA-20260610-BENCH5M",
   "receipt_type": "graph_consistency",
-  "engine_version": "sigma-0.9.0",
+  "mode": "full_verification",
+  "input_hash": "sha256:a3c9e7b2...",
+  "source_bundle_hash": "sha256:d4e7f0b2...",
   "verdict": "consistent",
-  "graph_vertices": 5000000,
-  "median_update_us": 35,
-  "drift": 0,
   "safe_to_rely": true,
-  "signature_scheme": "Ed25519",
-  "content_type": "application/vnd.svr.receipt+json"
+  "items_checked": 4,
+  "items_passed": 4,
+  "items_failed": 0,
+  "items_excluded": 0,
+  "timestamp_utc": "2026-06-10T12:00:00Z",
+  "engine_version": "sigma-0.9.0",
+  "verification_method": "cellular_sheaf_cohomology_h1",
+  "public_key": "ed25519 hex",
+  "signature": "ed25519 hex"
 }
 ```
 
-Every receipt is signed with Ed25519. Anyone with this library can check one. No engine required.
+Full receipts also carry per-item detail in `checked_items`. See [examples/receipts/](examples/receipts/) for complete PASS and FAIL samples. IANA-registered media type: [`application/vnd.svr.receipt+json`](https://www.iana.org/assignments/media-types/application/vnd.svr.receipt+json). File extension: `.svr.json`.
 
 ---
 
@@ -44,10 +54,12 @@ cd svr-verify
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -e .
+pip install pytest
+python -m pytest tests/
 python examples\verify_receipt.py examples\receipts\sample_pass.svr.json --sign
 ```
 
-Output:
+Output of the last command:
 
 ```
 Generating Ed25519 keypair...
@@ -87,6 +99,101 @@ python examples\verify_graph_demo.py
 
 ---
 
+## Verify a receipt
+
+### Command line
+
+```
+svr-verify receipt.svr.json
+svr-verify receipt.svr.json --pubkey issuer.pub
+svr-verify receipt.svr.json --json
+svr-verify receipt.svr.json --quiet
+```
+
+If the receipt embeds an issuer public key, `svr-verify` can verify directly. If your deployment pins issuer keys out-of-band, pass `--pubkey` with either a hex-encoded Ed25519 public key or a path to a file containing one. When a pinned key is supplied, the signature is verified against the pinned key, and any embedded key must match it; a mismatch fails closed. **Pinned keys are recommended for production trust decisions.**
+
+### CI/CD integration
+
+```
+svr-verify receipt.svr.json --quiet
+# Prints VALID or INVALID
+# Exit code 0 = valid, 1 = invalid, 2 = file error
+```
+
+### Python API
+
+```python
+from svr_verify import verify
+
+result = verify("receipt.svr.json")
+result = verify("receipt.svr.json", pubkey="issuer.pub")
+
+print(result["valid"])            # True/False
+print(result["signature_valid"])  # True/False
+print(result["pinned_key_used"])  # True if out-of-band key supplied
+print(result["structure_errors"]) # [] if clean
+```
+
+### Low-level API
+
+```python
+import json
+from svr_verify import canonical_bytes, verify_signature, validate_receipt
+
+with open("receipt.svr.json") as f:
+    receipt = json.load(f)
+
+# Verify Ed25519 signature (embedded key)
+sig_ok = verify_signature(receipt)
+
+# Verify against a pinned issuer key
+sig_ok = verify_signature(receipt, pinned_key="<hex>")
+
+# Validate structure (required fields, count invariant)
+errors = validate_receipt(receipt)
+
+# Get canonical byte sequence (what was signed)
+payload = canonical_bytes(receipt)
+```
+
+---
+
+## What it checks
+
+1. **Signature**: Recomputes the canonical serialization per SVR Spec Section 4, then verifies the Ed25519 signature against the embedded public key or a pinned issuer key.
+
+2. **Structure**: Validates all 22 required fields, the count invariant (`items_checked == items_passed + items_failed + items_excluded`), per-item required fields, and enum constraints.
+
+3. **Canonical Hash**: Produces a SHA-256 digest of the canonical payload for fingerprinting.
+
+The test suite in [tests/](tests/) covers valid-receipt acceptance, tamper rejection, missing-field rejection, canonicalization stability under key reordering, pinned-key mismatch rejection, and CLI exit-code contracts.
+
+---
+
+## Threat model
+
+`svr-verify` checks whether an SVR receipt is structurally valid and whether its Ed25519 signature verifies over the canonical payload.
+
+It does not prove that the issuing verifier was correct, that the source extraction was correct, that the public key is trusted, or that the receipt is fresh under a deployment's replay policy. Deployments must establish key trust (pinned keys via `--pubkey` are the supported mechanism), freshness windows, revocation policy, and context-binding rules.
+
+In other words: `svr-verify` verifies the receipt artifact. It does not replace authorization, sandboxing, TLS/mTLS, prompt-injection defenses, or source-of-truth validation.
+
+Security reports: see [SECURITY.md](SECURITY.md).
+
+---
+
+## Why this matters for MCP
+
+MCP lets agentic systems chain model outputs, tool calls, API actions, and downstream workflows. Transport security alone does not prove that an output was verified, that it was bound to a specific context, or that a downstream system can independently validate the evidence.
+
+SVR provides an application-layer receipt: a signed JSON artifact binding a verification result to input hashes, context, engine metadata, and issuance metadata. `svr-verify` is the standalone verifier for that artifact.
+
+Alignment with recent NSA and joint-agency guidance on MCP and agentic AI security: [docs/NSA_MCP_SECURITY_ALIGNMENT.md](docs/NSA_MCP_SECURITY_ALIGNMENT.md)
+
+Receipt-based routing (memoizing repeated deterministic checks with fail-closed bypass conditions): [ROUTING_DEMO.md](ROUTING_DEMO.md)
+
+---
+
 ## Why AI systems need deterministic receipts
 
 Production AI agents mutate memory, plans, claims, tool outputs, and execution state. When something goes wrong, the current answer is usually "ask another LLM whether the first one was right." That is probabilistic checking of probabilistic output.
@@ -106,7 +213,7 @@ This matters for agent memory graphs, RAG pipelines, compliance workflows, citat
 | Median lazy update latency | 35 us |
 | Drift at synchronization | 0 |
 | Memory (RestrictionStore) | 0.50 MB |
-| Cells touched per edit | 25,473 |
+| Cells in final state | 25,473 |
 | Algorithm | O(1) amortized incremental sheaf cohomology |
 | Hardware | Intel i9-13900H, 64 GB RAM |
 | GPU required | No |
@@ -116,101 +223,14 @@ Full methodology: [docs/BENCHMARK_5M.md](docs/BENCHMARK_5M.md)
 
 ---
 
-## Verify a receipt
-
-### Command line
-
-```
-svr-verify receipt.svr.json
-```
-
-Output:
-
-```
-============================================================
-SVR Verification Report
-============================================================
-
-  Receipt ID:      SATYA-20260518-4C2388CC
-  SVR Version:     1.0
-  Receipt Type:    compliance
-  Verdict:         contradicted
-  Items Checked:   12
-  Items Passed:    7
-  Items Failed:    5
-
-  Signature:       VALID
-  Structure:       VALID
-
-  RESULT: VALID
-
-============================================================
-```
-
-### Machine-readable output
-
-```
-svr-verify receipt.svr.json --json
-```
-
-### CI/CD integration
-
-```
-svr-verify receipt.svr.json --quiet
-# Prints VALID or INVALID
-# Exit code 0 = valid, 1 = invalid, 2 = file error
-```
-
-### Python API
-
-```python
-from svr_verify import verify
-
-result = verify("receipt.svr.json")
-print(result["valid"])            # True/False
-print(result["signature_valid"])  # True/False
-print(result["structure_errors"]) # [] if clean
-```
-
-### Low-level API
-
-```python
-import json
-from svr_verify import canonical_bytes, verify_signature, validate_receipt
-
-with open("receipt.svr.json") as f:
-    receipt = json.load(f)
-
-# Verify Ed25519 signature
-sig_ok = verify_signature(receipt)
-
-# Validate structure (required fields, count invariant)
-errors = validate_receipt(receipt)
-
-# Get canonical byte sequence (what was signed)
-payload = canonical_bytes(receipt)
-```
-
----
-
-## What it checks
-
-1. **Signature**: Recomputes the canonical serialization per SVR Spec Section 4, then verifies the Ed25519 signature against the embedded public key.
-
-2. **Structure**: Validates all 22 required fields, the count invariant (`items_checked == items_passed + items_failed + items_excluded`), per-item required fields, and enum constraints.
-
-3. **Canonical Hash**: Produces a SHA-256 digest of the canonical payload for fingerprinting.
-
----
-
 ## How SVR works
 
 An SVR is a cryptographically signed, point-in-time attestation that a verification engine audited a specific input and produced a specific result.
 
 The verification flow:
 
-1. The SIGMA engine receives a graph state (vertices, edges, claims).
-2. It computes sheaf cohomology over the graph to detect structural contradictions.
+1. The issuing engine receives an input (for SIGMA: a graph state of vertices, edges, and claims).
+2. It runs its deterministic checks (for SIGMA: sheaf cohomology over the graph to detect structural contradictions).
 3. It emits a receipt containing the verdict, item-level results, and metadata.
 4. The receipt is canonicalized per SVR Spec Section 4 and signed with Ed25519.
 5. Anyone with `svr-verify` can independently check the signature and structure.
@@ -221,7 +241,8 @@ SVRs are:
 - **Signed** - Ed25519, unforgeable
 - **Independently verifiable** - anyone with this library can check one
 - **Vendor-neutral** - any compliant engine may issue SVRs
-- **IANA registered** - media type `application/vnd.svr.receipt+json`
+- **IANA-registered** - media type `application/vnd.svr.receipt+json`
+- **Deterministic** - same input and source bundle, same verdict
 
 ---
 
@@ -237,20 +258,17 @@ For the full theoretical treatment, see [arXiv:2606.04227](https://arxiv.org/abs
 
 ---
 
-## Routing demo
-
-For deterministic verification bypass routing (receipt-based memoization of repeated checks), see [ROUTING_DEMO.md](ROUTING_DEMO.md).
-
----
-
 ## Specification
 
 - [SVR Spec v1.0](docs/SVR_SPEC.md)
 - [How to Read an SVR](docs/HOW_TO_READ_AN_SVR.md)
 - [Platform Adoption Guide](docs/PLATFORM_ADOPTION_GUIDE.md)
 - [Agent State Verification](docs/AGENT_STATE_VERIFICATION.md)
+- [NSA MCP Security Alignment](docs/NSA_MCP_SECURITY_ALIGNMENT.md)
 - [IANA Registration](docs/IANA_REGISTRATION.txt)
 - [JSON Schema](https://github.com/Jasonleonardvolk/sigma/blob/main/satya/spec/svr_schema_v1.json)
+
+Implementations: [Python](svr_verify/) | [JavaScript](js/) | [Go](go/)
 
 ---
 
@@ -260,8 +278,7 @@ For deterministic verification bypass routing (receipt-based memoization of repe
 - **arXiv:** [arXiv:2606.04227](https://arxiv.org/abs/2606.04227)
 - **PyPI:** [svr-verify](https://pypi.org/project/svr-verify/)
 - **Website:** [invariant.pro](https://invariant.pro)
-- **IANA Registration:** `application/vnd.svr.receipt+json`
-- **sigma-guard (graph DB integration):** [github.com/Jasonleonardvolk/sigma-guard](https://github.com/Jasonleonardvolk/sigma-guard)
+- **sigma-guard (issuer implementation, graph DB integration):** [github.com/Jasonleonardvolk/sigma-guard](https://github.com/Jasonleonardvolk/sigma-guard)
 
 ---
 

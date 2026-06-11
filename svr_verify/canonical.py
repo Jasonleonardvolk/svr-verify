@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import json
 import hashlib
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 
 # Fields excluded from canonical serialization (Section 4.1, Step 2).
@@ -88,16 +88,32 @@ def canonical_hash(receipt):
     return hashlib.sha256(canonical_bytes(receipt)).hexdigest()
 
 
-def verify_signature(receipt):
+def verify_signature(receipt, pinned_key=None):
     """Verify the Ed25519 signature on an SVR.
+
+    Two trust modes:
+
+    1. Embedded key (default): the signature is verified against the
+       'public_key' field embedded in the receipt. This proves the
+       receipt is internally consistent but does NOT establish that
+       the key belongs to a trusted issuer.
+
+    2. Pinned key: pass the issuer's public key (hex-encoded, 32
+       bytes) via pinned_key. The signature is verified against the
+       pinned key. If the receipt also embeds a public key and it
+       differs from the pinned key, verification fails. Pinned keys
+       are recommended for production trust decisions.
 
     Args:
         receipt: The SVR JSON object with 'signature' and
                  'public_key' fields present.
+        pinned_key: Optional hex-encoded Ed25519 public key pinned
+                    out-of-band. If provided, it is authoritative.
 
     Returns:
-        True if the signature is valid.
-        False if unsigned, missing fields, or verification fails.
+        True if the signature is valid under the selected key.
+        False if unsigned, missing fields, key mismatch, or
+        verification fails.
 
     Raises:
         ImportError: If PyNaCl is not installed.
@@ -111,16 +127,34 @@ def verify_signature(receipt):
             "Install with: pip install pynacl"
         )
 
-    pub_hex = receipt.get("public_key", "unsigned")
+    embedded_hex = receipt.get("public_key", "unsigned")
     sig_hex = receipt.get("signature", "")
 
-    if pub_hex == "unsigned" or not sig_hex:
+    if not sig_hex:
         return False
 
+    if pinned_key is not None:
+        pinned_hex = pinned_key.strip().lower()
+        # If the receipt embeds a real key, it must match the
+        # pinned key. A mismatch is a hard failure: it indicates
+        # the receipt was signed by a key the deployment does not
+        # trust for this issuer.
+        if embedded_hex not in ("unsigned", "", None):
+            if embedded_hex.strip().lower() != pinned_hex:
+                return False
+        key_hex = pinned_hex
+    else:
+        if embedded_hex in ("unsigned", "", None):
+            return False
+        key_hex = embedded_hex
+
     try:
-        pub_bytes = bytes.fromhex(pub_hex)
+        pub_bytes = bytes.fromhex(key_hex)
         sig_bytes = bytes.fromhex(sig_hex)
     except ValueError:
+        return False
+
+    if len(pub_bytes) != 32:
         return False
 
     message = canonical_bytes(receipt)

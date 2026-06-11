@@ -3,23 +3,43 @@
 #
 # Usage:
 #   svr-verify receipt.svr.json
+#   svr-verify receipt.svr.json --pubkey issuer.pub
 #   python -m svr_verify receipt.svr.json
 
 from __future__ import annotations
 
 import json
+import os
 import sys
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 from svr_verify.canonical import verify_signature, canonical_hash
 from svr_verify.validate import validate_receipt
 
 
-def verify_file(path):
+def _load_pinned_key(value):
+    """Resolve a --pubkey argument to a hex-encoded key string.
+
+    Accepts either a path to a file containing the hex key, or the
+    hex key itself. Whitespace is stripped.
+    """
+    if value is None:
+        return None
+    if os.path.isfile(value):
+        with open(value, "r", encoding="utf-8") as f:
+            return f.read().strip()
+    return value.strip()
+
+
+def verify_file(path, pubkey=None):
     """Verify an SVR file on disk.
 
     Args:
         path: Path to a .svr.json file.
+        pubkey: Optional pinned issuer public key (hex string or
+                path to a file containing the hex string). If
+                provided, the signature is verified against this
+                key and any embedded key must match it.
 
     Returns:
         dict with verification results.
@@ -27,12 +47,14 @@ def verify_file(path):
     with open(path, "r", encoding="utf-8") as f:
         receipt = json.load(f)
 
+    pinned_key = _load_pinned_key(pubkey)
+
     structure_errors = validate_receipt(receipt)
     sig_valid = False
     sig_error = None
 
     try:
-        sig_valid = verify_signature(receipt)
+        sig_valid = verify_signature(receipt, pinned_key=pinned_key)
     except ImportError as e:
         sig_error = str(e)
     except Exception as e:
@@ -42,6 +64,7 @@ def verify_file(path):
         "valid": sig_valid and len(structure_errors) == 0,
         "signature_valid": sig_valid,
         "signature_error": sig_error,
+        "pinned_key_used": pinned_key is not None,
         "structure_errors": structure_errors,
         "receipt_id": receipt.get("receipt_id", ""),
         "svr_version": receipt.get("svr_version", ""),
@@ -71,6 +94,9 @@ def main(args=None):
         print("  svr-verify <receipt.svr.json> [options]")
         print()
         print("Options:")
+        print("  --pubkey <key>   Pinned issuer public key: hex string")
+        print("                   or path to a file containing it.")
+        print("                   Recommended for production trust.")
         print("  --json           Output results as JSON")
         print("  --quiet          Only print VALID or INVALID")
         print("  --render <path>  Render receipt as HTML file")
@@ -84,6 +110,16 @@ def main(args=None):
     path = args[0]
     json_output = "--json" in args
     quiet = "--quiet" in args
+
+    pubkey = None
+    if "--pubkey" in args:
+        ki = args.index("--pubkey")
+        if ki + 1 < len(args):
+            pubkey = args[ki + 1]
+        else:
+            print("Error: --pubkey requires a value (hex string or file path)")
+            return 2
+
     render_path = None
     if "--render" in args:
         ri = args.index("--render")
@@ -91,7 +127,7 @@ def main(args=None):
             render_path = args[ri + 1]
 
     try:
-        result = verify_file(path)
+        result = verify_file(path, pubkey=pubkey)
     except FileNotFoundError:
         if quiet:
             print("ERROR")
@@ -146,7 +182,17 @@ def main(args=None):
     print("  Items Excluded:  %d" % result["items_excluded"])
     print()
     print("  Canonical Hash:  %s" % result["canonical_hash"])
-    print("  Public Key:      %s" % result["public_key"][:16] + "...")
+
+    pub = result["public_key"]
+    if pub and pub not in ("unsigned", "") and len(pub) > 16:
+        print("  Public Key:      %s..." % pub[:16])
+    else:
+        print("  Public Key:      %s" % pub)
+
+    if result["pinned_key_used"]:
+        print("  Key Trust:       PINNED (out-of-band key)")
+    else:
+        print("  Key Trust:       EMBEDDED (receipt-supplied key)")
     print()
 
     # Signature

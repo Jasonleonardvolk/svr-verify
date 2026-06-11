@@ -8,13 +8,15 @@
 #
 # Verify a receipt:
 #   svr-verify receipt.svr.json
+#   svr-verify receipt.svr.json --pubkey issuer.pub
 #
 # Python API:
-#   from svr_verify import verify, validate
+#   from svr_verify import verify, validate_receipt
 #   result = verify("receipt.svr.json")
-#   errors = validate(receipt_dict)
+#   result = verify("receipt.svr.json", pubkey="<hex or path>")
+#   errors = validate_receipt(receipt_dict)
 #
-# May 2026 | Invariant Research
+# June 2026 | Invariant Research
 # MIT License
 
 from svr_verify.canonical import (
@@ -34,16 +36,23 @@ from svr_verify.cli import verify_file
 from svr_verify.render import render_html
 
 
-def verify(path):
+def verify(path, pubkey=None):
     """Verify an SVR file. Returns a result dict.
 
     Args:
         path: Path to a .svr.json file.
+        pubkey: Optional pinned issuer public key. Either a
+                hex-encoded Ed25519 public key string or a path
+                to a file containing one. When provided, the
+                signature is verified against this key and any
+                embedded key must match it. Pinned keys are
+                recommended for production trust decisions.
 
     Returns:
         dict with keys:
             valid: bool
             signature_valid: bool
+            pinned_key_used: bool
             structure_errors: list of str
             receipt_id: str
             verdict: str
@@ -51,10 +60,10 @@ def verify(path):
             items_passed: int
             items_failed: int
     """
-    return verify_file(path)
+    return verify_file(path, pubkey=pubkey)
 
 
-__version__ = "1.0.3"
+__version__ = "1.0.4"
 
 __all__ = [
     "canonical_bytes",
@@ -65,5 +74,6 @@ __all__ = [
     "validate_structure",
     "verify",
     "verify_file",
+    "render_html",
     "EXCLUDED_FIELDS",
 ]
