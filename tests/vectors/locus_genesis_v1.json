@@ -1,0 +1,63 @@
+{
+  "vector": "locus_genesis_v1",
+  "description": "First pinned Locus test vector: one ReceiptCommitment event sealed with a fixed Ed25519 key, single-leaf Merkle tree, single-operator checkpoint. Captured 2026-06-11 from locus-core print_genesis_vector and reproduced identically across runs. Source of truth: C:/Dev/kha/sigma/locus/vectors/genesis_v1.json (this is the shared copy per Milestone 1 item 8).",
+  "protocol": {
+    "event_version": 1,
+    "event_record_version": 1,
+    "hash": "BLAKE3",
+    "signature": "Ed25519 over the 32-byte event id",
+    "contexts": {
+      "leaf": "locus.leaf.v1",
+      "node": "locus.node.v1",
+      "checkpoint": "locus.checkpoint.v1"
+    },
+    "canonical_encoding": "stream_id(32) || sequence u64 LE || lamport u64 LE || vc_count u32 LE || (stream_id(32) || u64 LE)* || physical_time u64 LE || timestamp u64 LE || parent_count u32 LE || (event_id(32) || stream_id(32) || sequence u64 LE)* || payload_len u32 LE || payload || version u32 LE; payload = tag(1) then length-prefixed UTF-8 strings in struct order, Options as one-byte flag"
+  },
+  "inputs": {
+    "signing_key_seed_hex": "0707070707070707070707070707070707070707070707070707070707070707",
+    "stream_id_hex": "0101010101010101010101010101010101010101010101010101010101010101",
+    "sequence": 0,
+    "clock": {
+      "lamport_time": 1,
+      "vector_clock": [
+        {
+          "stream_id_hex": "0101010101010101010101010101010101010101010101010101010101010101",
+          "value": 1
+        }
+      ],
+      "physical_time": 1900000000000000
+    },
+    "timestamp": 1900000000000000,
+    "parent_refs": [],
+    "version": 1,
+    "payload": {
+      "type": "ReceiptCommitment",
+      "tag": "0x06",
+      "svr_transparency_version": "1.0",
+      "leaf_type": "svr_receipt_hash",
+      "receipt_hash": "sha256:abababababababababababababababababababababababababababababababab",
+      "receipt_type": "mcp_output_verification",
+      "issuer_key_id": "ed25519:test-issuer",
+      "subject_hash": null,
+      "issued_at": "2026-06-11T12:00:00Z",
+      "privacy_mode": "hash_only",
+      "policy_class": "class_2_transparency_recommended"
+    },
+    "checkpoint": {
+      "sequence": 0,
+      "timestamp": 1900000000000001,
+      "state_root_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "tree_size": 1,
+      "prev_checkpoint_hash_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "signer": "same key as signing_key_seed_hex, single-operator mode"
+    }
+  },
+  "expected": {
+    "canonical_bytes_hex": "010101010101010101010101010101010101010101010101010101010101010100000000000000000100000000000000010000000101010101010101010101010101010101010101010101010101010101010101010000000000000000c012390ac0060000c012390ac0060000000000e40000000603000000312e30100000007376725f726563656970745f68617368470000007368613235363a61626162616261626162616261626162616261626162616261626162616261626162616261626162616261626162616261626162616261626162616261626162170000006d63705f6f75747075745f766572696669636174696f6e13000000656432353531393a746573742d6973737565720014000000323032362d30362d31315431323a30303a30305a09000000686173685f6f6e6c790120000000636c6173735f325f7472616e73706172656e63795f7265636f6d6d656e64656401000000",
+    "event_id": "c0389b3782dd39a8597ebf82b8d21c08901626518ee0a0692f036dae51c0f7d3",
+    "event_signature": "1163f8472b8a026c7487107a04c1fc3725dd0ffd9e3492291f141767edfdf72eeffb89c434108076e8a4a22947632684a1bc1bfb0d661bb75e711ae88918e801",
+    "merkle_root": "28aeec58ad142feef49d4470ee5ac369e1711ba1b739b0bbcbafe1e85fafd7e8",
+    "checkpoint_hash": "81aa02ce450700e60b56a20d51534ae737a83be0519e28082cfaabad0fd95c20",
+    "operator_pubkey": "ea4a6c63e29c520abef5507b132ec5f9954776aebebe7b92421eea691446d22c"
+  }
+}

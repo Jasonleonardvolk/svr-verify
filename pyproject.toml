@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "svr-verify"
-version = "1.0.4"
+version = "1.1.0"
 description = "Standalone verifier for Signed Verification Receipts (SVR). No engine dependency required."
 readme = "README.md"
 license = "MIT"
@@ -26,6 +26,8 @@ keywords = [
     "mcp",
     "provenance",
     "deterministic",
+    "transparency",
+    "merkle",
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -48,6 +50,9 @@ dependencies = [
 [project.optional-dependencies]
 test = [
     "pytest>=7.0",
+]
+transparency = [
+    "blake3>=0.4.0",
 ]
 
 [project.scripts]
